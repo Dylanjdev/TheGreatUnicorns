@@ -2,10 +2,13 @@
   "name": "uni",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://dylanjdev.github.io/TheGreatUnicorns",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,7 +17,7 @@
     "@react-three/fiber": "^9.6.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "three": "^0.184.0"
+    "three": "^0.181.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

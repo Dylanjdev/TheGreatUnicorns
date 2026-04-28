@@ -199,7 +199,11 @@ export default function App() {
         </div>
         <div className="hero__content">
           <div className="hero__eyebrow">
-            <span className="hero__tag">LoveLeeVa LLC &nbsp;·&nbsp; dba Unbridled Nero Information</span>
+            <span className="hero__tag">
+              <span>LoveLeeVa LLC</span>
+              <span className="hero__tag-sep" aria-hidden="true">&nbsp;·&nbsp;</span>
+              <span>dba Unbridled Nero Information</span>
+            </span>
           </div>
           <h1 className="hero__h1">
             <span className="hero__line">We stop</span>
@@ -236,7 +240,7 @@ export default function App() {
       {/* MANDATE BAR */}
       <div className="mandate-bar">
         <div className="mandate-bar__inner">
-          {["Fiduciary-Grade Advisory", "Vendor Independence", "AI Infrastructure Reality", "The Outpost SMDC"].map((item, i) => (
+          {["AI Awareness for Rural Virginia", "Executive Fiduciary Mirror", "Enterprise AI in Production", "The UNI Triad"].map((item, i) => (
             <span key={i} className="mandate-bar__item">
               <span className="mandate-bar__dot" />
               {item}
@@ -248,32 +252,32 @@ export default function App() {
       {/* ADVISORY */}
       <section id="advisory" className="section section--white">
         <div className="section__inner">
-          <div className="section__label">Engine 01</div>
-          <h2 className="section__h2">Fiduciary Advisory</h2>
+          <div className="section__label">The UNI Triad · Pillar 01</div>
+          <h2 className="section__h2">The Spark (Executive Fiduciary Advisory)</h2>
           <p className="section__lead">
-            Executives are surrounded by yes-men and vendors selling bloated roadmaps.
-            They are bleeding margin on trends they don't understand.
-            We define the bleed as the gap between what gets sold and what can be delivered on time.
+            UNI functions as an Executive Fiduciary Mirror, eliminating the trust gap between
+            ambitious Go-To-Market strategy and technical delivery. Our high-intensity Skull Sessions
+            pressure-test decisions so your AI strategy, engineering execution, and economics stay aligned.
           </p>
           <div className="cards">
             {[
               {
-                title: "The Reality Bridge",
-                body: "We audit your GTM vs. delivery alignment. We look at your pipeline, identify the trust gap, and give you the unbridled truth about why your teams are failing to execute.",
-                stat: "40%",
-                statLabel: "Margin floor, minimum"
+                title: "Skull Session Clarity",
+                body: "We expose hidden inefficiencies in operations, architecture, and AI readiness so leadership can make fast, high-confidence decisions.",
+                stat: "AI",
+                statLabel: "Readiness first"
               },
               {
-                title: "The Fiduciary Mirror",
-                body: "We don't build it for you. We diagnose the bleed and architect the framework to stop it. Retainer-based. C-suite only. No watered-down deliverables.",
+                title: "Trust Gap Elimination",
+                body: "We bridge boardroom strategy to engineering reality with fiduciary-grade guidance and no vendor bias, so AI plans become executable systems.",
                 stat: "P&L",
-                statLabel: "Owners only"
+                statLabel: "Owner aligned"
               },
               {
-                title: "The Trust Engine",
-                body: "Your consultants have commission breath. UNI has no vendor relationships to protect. We solve for the tech problem, not the vendor spiff.",
+                title: "Physics Over Hype",
+                body: "We solve for physics, not the spiff. Every recommendation is measured by real AI performance, delivery risk, and total margin impact.",
                 stat: "0",
-                statLabel: "Vendor affiliations"
+                statLabel: "Vendor spiff"
               }
             ].map((card, i) => (
               <div key={i} className="card">
@@ -292,41 +296,42 @@ export default function App() {
       {/* AI STRATEGY */}
       <section id="ai-strategy" className="section section--dark">
         <div className="section__inner">
-          <div className="section__label section__label--light">Engine 02</div>
-          <h2 className="section__h2 section__h2--light">AI Infrastructure Strategy</h2>
+          <div className="section__label section__label--light">The UNI Triad · Pillar 02</div>
+          <h2 className="section__h2 section__h2--light">The Forge (Implementation &amp; Growth)</h2>
           <p className="section__lead section__lead--light">
-            Every Fortune 500 is panic-buying AI without an infrastructure or data strategy to support it.
-            They're funding $2M pilots that never reach production.
+            This is where strategy becomes working systems. UNI actively implements, optimizes,
+            and scales technical ecosystems with disciplined AI operations, cloud architecture,
+            and data hygiene that produce real growth.
           </p>
           <div className="split">
             <div className="split__text">
               <div className="split__item">
                 <div className="split__num">01</div>
                 <div>
-                  <h4 className="split__title">Infrastructure audit</h4>
-                  <p className="split__body">We evaluate your current data center footprint, cloud architecture, and data hygiene. We tell you the truth about what it will actually take to operationalize AI.</p>
+                  <h4 className="split__title">Enterprise AI implementation</h4>
+                  <p className="split__body">We move AI from pilot to production by aligning data pipelines, cloud controls, model operations, and business process design.</p>
                 </div>
               </div>
               <div className="split__item">
                 <div className="split__num">02</div>
                 <div>
-                  <h4 className="split__title">Reality roadmap</h4>
-                  <p className="split__body">Strategic roadmaps that bridge the gap between AI hallucinations and technical reality. We protect your margins from predatory software vendors.</p>
+                  <h4 className="split__title">Continuous AI optimization</h4>
+                  <p className="split__body">We continuously refine architecture, governance, and AI operations so your systems scale faster, smarter, and more profitably.</p>
                 </div>
               </div>
               <div className="split__item">
                 <div className="split__num">03</div>
                 <div>
-                  <h4 className="split__title">Vendor-neutral delivery</h4>
-                  <p className="split__body">No chip allegiances. No cloud spiffs. We recommend what actually solves your problem at the lowest total cost of ownership.</p>
+                  <h4 className="split__title">Technical Unicorn growth</h4>
+                  <p className="split__body">We grow rare, high-impact organizations by tightly aligning strategy, real AI implementation, and infrastructure execution.</p>
                 </div>
               </div>
             </div>
             <div className="split__metrics">
               {[
-                { val: "$2M+", label: "Avg. wasted AI pilot spend we recover" },
-                { val: "36mo", label: "Typical Tier 1 data center delay we bypass" },
-                { val: "1.05", label: "Target PUE at The Outpost" },
+                { val: "3x", label: "Faster AI deployment velocity" },
+                { val: "24/7", label: "Operational AI performance discipline" },
+                { val: "100%", label: "Strategy-to-delivery alignment focus" },
               ].map((m, i) => (
                 <div key={i} className="metric">
                   <div className="metric__val">{m.val}</div>
@@ -341,30 +346,31 @@ export default function App() {
       {/* OUTPOST */}
       <section id="outpost" className="section section--outpost">
         <div className="section__inner">
-          <div className="section__label">Engine 03 — Capital North Star</div>
-          <h2 className="section__h2">The Outpost</h2>
+          <div className="section__label">The UNI Triad · Pillar 03</div>
+          <h2 className="section__h2">The Outpost (Capital Infrastructure Development)</h2>
           <p className="section__lead">
-            210 acres. Off-grid. Constitutional Oaks Industrial Park, Lee County, Virginia.
-            A modular edge-computing campus designed to bypass the global power shortage.
+            The Outpost advances next-generation digital and AI infrastructure in Lee County, Virginia,
+            while partnering with local vocational school tech students to create real jobs,
+            AI capability, and long-term economic opportunity in rural America.
           </p>
           <div className="outpost-grid">
             <div className="outpost-card outpost-card--featured">
-              <div className="outpost-card__label">The model</div>
-              <h3 className="outpost-card__title">The data center RV park</h3>
+              <div className="outpost-card__label">Community impact model</div>
+              <h3 className="outpost-card__title">We Grow Our Own in action</h3>
               <p className="outpost-card__body">
-                We provide the land, the islanded power, and the standardized liquid-cooled pads.
-                You drop your modular compute skid and turn it on. No utility queue.
-                No 3-year construction timeline. No monolithic CapEx trap.
+                We build physical digital infrastructure that supports edge computing and AI workloads,
+                and we intentionally involve local students in hands-on technical projects so talent,
+                capability, and opportunity are grown locally.
               </p>
-              <button className="btn btn--primary" style={{marginTop: "1.5rem"}} onClick={() => scrollTo("contact")}>
-                Request investment brief
+              <button className="btn btn--outpost" onClick={() => scrollTo("contact")}>
+                Build with UNI <span aria-hidden="true">→</span>
               </button>
             </div>
             {[
-              { val: "210ac", label: "Constitutional Oaks", sub: "Lee County, VA" },
-              { val: "$2.5M", label: "Land cost", sub: "vs $125M Tier 1" },
-              { val: "9–12mo", label: "Time to first compute", sub: "vs 36–48mo monolithic" },
-              { val: "100%", label: "Off-grid capable", sub: "Islanded microgrid" },
+              { val: "AI", label: "Awareness + training", sub: "Rural workforce growth" },
+              { val: "Local", label: "Vocational partnerships", sub: "Lee County students" },
+              { val: "Real", label: "Hands-on projects", sub: "Applied infrastructure" },
+              { val: "Rural", label: "Economic expansion", sub: "Community-first outcomes" },
             ].map((s, i) => (
               <div key={i} className="outpost-stat">
                 <div className="outpost-stat__val">{s.val}</div>
@@ -396,8 +402,8 @@ export default function App() {
           <div className="section__label">Work with us</div>
           <h2 className="section__h2">Start a conversation</h2>
           <p className="section__lead">
-            We engage exclusively with P&amp;L owners: CEOs, CIOs, Private Equity Operating Partners,
-            and Infrastructure Investors.
+            Whether you're a local business, a growing mid-market company, or a large enterprise,
+            UNI helps you operationalize practical AI, eliminate margin bleed, and scale responsibly.
           </p>
           {formSent ? (
             <div className="form-success">
@@ -409,30 +415,54 @@ export default function App() {
             <form className="form" onSubmit={handleSubmit}>
               <div className="form__row">
                 <div className="form__field">
-                  <label className="form__label">Name</label>
-                  <input className="form__input" type="text" required
+                  <label className="form__label" htmlFor="contact-name">Name</label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    className="form__input"
+                    type="text"
+                    autoComplete="name"
+                    required
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
                     placeholder="Full name" />
                 </div>
                 <div className="form__field">
-                  <label className="form__label">Company</label>
-                  <input className="form__input" type="text" required
+                  <label className="form__label" htmlFor="contact-company">Company</label>
+                  <input
+                    id="contact-company"
+                    name="company"
+                    className="form__input"
+                    type="text"
+                    autoComplete="organization"
+                    required
                     value={formData.company}
                     onChange={e => setFormData({...formData, company: e.target.value})}
                     placeholder="Organization" />
                 </div>
               </div>
               <div className="form__field">
-                <label className="form__label">Email</label>
-                <input className="form__input" type="email" required
+                <label className="form__label" htmlFor="contact-email">Email</label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  className="form__input"
+                  type="email"
+                  autoComplete="email"
+                  required
                   value={formData.email}
                   onChange={e => setFormData({...formData, email: e.target.value})}
                   placeholder="you@company.com" />
               </div>
               <div className="form__field">
-                <label className="form__label">What are you trying to solve?</label>
-                <textarea className="form__textarea" required rows={4}
+                <label className="form__label" htmlFor="contact-message">What are you trying to solve?</label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  className="form__textarea"
+                  autoComplete="on"
+                  required
+                  rows={4}
                   value={formData.message}
                   onChange={e => setFormData({...formData, message: e.target.value})}
                   placeholder="Tell us about the bleed." />
@@ -453,7 +483,7 @@ export default function App() {
             <span className="footer__name">UNI</span>
           </div>
           <div className="footer__legal">
-            <span>LoveLeeVa LLC dba UNI · Unbridled Nero Information</span>
+            <span>LoveLeeVa LLC dba UNI · Unbridled Neuro Information</span>
             <span>Lee County, Virginia</span>
             <span>© {new Date().getFullYear()} All rights reserved.</span>
           </div>
