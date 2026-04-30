@@ -1,7 +1,7 @@
 const STATIC_CACHE = "uni-static-v1";
 const MEDIA_CACHE = "uni-media-v1";
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
