@@ -1,5 +1,4 @@
-const STATIC_CACHE = "uni-static-v1";
-const MEDIA_CACHE = "uni-media-v1";
+const STATIC_CACHE = "uni-static-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -8,9 +7,8 @@ self.addEventListener("install", () => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      const keep = new Set([STATIC_CACHE, MEDIA_CACHE]);
       const keys = await caches.keys();
-      await Promise.all(keys.filter((key) => !keep.has(key)).map((key) => caches.delete(key)));
+      await Promise.all(keys.filter((key) => key !== STATIC_CACHE).map((key) => caches.delete(key)));
       await self.clients.claim();
     })(),
   );
@@ -18,15 +16,8 @@ self.addEventListener("activate", (event) => {
 
 function isCacheableRequest(requestUrl, method) {
   if (method !== "GET") return false;
-
   const ext = requestUrl.pathname.split(".").pop()?.toLowerCase() || "";
-  const staticExts = new Set(["js", "css", "png", "jpg", "jpeg", "webp", "svg", "glb", "woff", "woff2"]);
-  const mediaExts = new Set(["mp4", "webm"]);
-
-  return {
-    staticAsset: staticExts.has(ext),
-    mediaAsset: mediaExts.has(ext),
-  };
+  return new Set(["js", "css", "png", "jpg", "jpeg", "webp", "svg", "glb", "woff", "woff2"]).has(ext);
 }
 
 self.addEventListener("fetch", (event) => {
@@ -34,15 +25,11 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   if (url.origin !== self.location.origin) return;
-
-  const cacheInfo = isCacheableRequest(url, request.method);
-  if (!cacheInfo.staticAsset && !cacheInfo.mediaAsset) return;
-
-  const cacheName = cacheInfo.mediaAsset ? MEDIA_CACHE : STATIC_CACHE;
+  if (!isCacheableRequest(url, request.method)) return;
 
   event.respondWith(
     (async () => {
-      const cache = await caches.open(cacheName);
+      const cache = await caches.open(STATIC_CACHE);
       const cached = await cache.match(request);
 
       if (cached) {
