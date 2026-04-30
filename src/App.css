@@ -3,8 +3,6 @@
    Fortune 500 Grade · Brutalist Refined · LoveLeeVa LLC
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
-
 /* ── Tokens ─────────────────────────────────────────────── */
 :root {
   --black:        #0A0A0A;
@@ -357,35 +355,6 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   pointer-events: none;
 }
 
-.hero__video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(0.95) contrast(1.05);
-  z-index: 0;
-  opacity: 0;
-  transition: opacity var(--theme-dur) var(--theme-ease);
-}
-
-.hero__video--light {
-  filter: saturate(0.95) contrast(1.05);
-}
-
-.hero__video--dark {
-  filter: saturate(0.9) contrast(1.08) brightness(0.78);
-}
-
-.hero__video--visible {
-  opacity: 1;
-}
-
-.hero__video--hidden {
-  opacity: 0;
-}
-
 .hero__bg::before {
   content: "";
   position: absolute;
@@ -469,6 +438,7 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
 
 .hero__stamp {
   position: relative;
+  z-index: 2;
   justify-self: end;
   align-self: center;
   right: auto;
@@ -481,9 +451,49 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
 }
 
 .hero__model {
+  position: absolute !important;
+  inset: 0;
   width: 100%;
   height: 100%;
-  filter: grayscale(0.3) contrast(1.25);
+}
+
+.hero__model-skeleton {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.hero__model-fallback {
+  display: flex;
+  gap: 0.08em;
+  font-family: var(--font-serif);
+  font-size: clamp(64px, 16vw, 120px);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--black);
+  opacity: 0.18;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  user-select: none;
+}
+
+.hero__model-fallback__char {
+  display: inline-block;
+  animation: logo-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50%       { opacity: 1;   transform: translateY(-6px); }
+}
+
+.app--dark .hero__model-fallback {
+  color: var(--white);
+  opacity: 0.22;
 }
 
 /* ── Mandate Bar ─────────────────────────────────────────── */
@@ -491,6 +501,8 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   background: var(--black);
   padding: 18px 32px;
   overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 60px;
 }
 
 .mandate-bar__inner {
@@ -525,6 +537,8 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
 /* ── Sections ────────────────────────────────────────────── */
 .section {
   padding: var(--section-pad) 32px;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 
 .section--white { background: var(--white); }
@@ -807,6 +821,8 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   background: var(--black);
   padding: 80px 32px;
   text-align: center;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
 }
 
 .philosophy__inner {
@@ -923,6 +939,8 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   background: var(--black);
   padding: 40px 32px;
   border-top: 1px solid var(--graphite);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 120px;
 }
 
 .footer__inner {

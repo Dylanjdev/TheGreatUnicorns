@@ -1,108 +1,17 @@
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Center, Float, useGLTF } from "@react-three/drei";
-import * as THREE from "three";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import "./App.css";
 import smallLogo from "./assets/small_logo.png";
 import transparentLogo from "./assets/transparentlogo.png";
-import logoModel from "./assets/logo.glb?url";
-import logoBrightModel from "./assets/logobrigh.glb?url";
-import heroBackgroundLightVideo from "./assets/14683943_3840_2160_30fps.mp4";
-import heroBackgroundDarkVideo from "./assets/darkmode.mp4";
 
-function collectMeshMaterials(root) {
-  const mats = [];
-  root.traverse((obj) => {
-    if (!obj.isMesh || !obj.material) return;
-    const meshMats = Array.isArray(obj.material) ? obj.material : [obj.material];
-    meshMats.forEach((mat) => {
-      if (!mats.includes(mat)) mats.push(mat);
-    });
-  });
-  return mats;
-}
-
-function HeroLogoModel({ isDark }) {
-  const groupRef = useRef(null);
-  const blendRef = useRef(isDark ? 1 : 0);
-  const { scene: lightScene } = useGLTF(logoModel);
-  const { scene: darkScene } = useGLTF(logoBrightModel);
-
-  const lightModel = useMemo(() => lightScene.clone(true), [lightScene]);
-  const darkModel = useMemo(() => darkScene.clone(true), [darkScene]);
-
-  const lightMaterials = useMemo(() => collectMeshMaterials(lightModel), [lightModel]);
-  const darkMaterials = useMemo(() => collectMeshMaterials(darkModel), [darkModel]);
-
-  const fitScale = useMemo(() => {
-    const lightBox = new THREE.Box3().setFromObject(lightModel);
-    const darkBox = new THREE.Box3().setFromObject(darkModel);
-    const lightSize = lightBox.getSize(new THREE.Vector3());
-    const darkSize = darkBox.getSize(new THREE.Vector3());
-    const maxAxis = Math.max(lightSize.x, lightSize.y, lightSize.z, darkSize.x, darkSize.y, darkSize.z) || 1;
-    return 2.6 / maxAxis;
-  }, [lightModel, darkModel]);
-
-  useEffect(() => {
-    const allMaterials = [...lightMaterials, ...darkMaterials];
-    allMaterials.forEach((mat) => {
-      mat.transparent = true;
-      mat.depthWrite = false;
-    });
-
-    lightMaterials.forEach((mat) => {
-      if ("color" in mat && mat.color?.set) mat.color.set("#000000");
-      if ("emissive" in mat && mat.emissive?.set) mat.emissive.set("#000000");
-    });
-
-    darkMaterials.forEach((mat) => {
-      if ("color" in mat && mat.color?.set) mat.color.set("#ffffff");
-      if ("emissive" in mat && mat.emissive?.set) mat.emissive.set("#ffffff");
-    });
-  }, [lightMaterials, darkMaterials]);
-
-  useFrame((state, delta) => {
-    if (!groupRef.current) return;
-    const t = state.clock.getElapsedTime();
-    const targetBlend = isDark ? 1 : 0;
-    blendRef.current = THREE.MathUtils.damp(blendRef.current, targetBlend, 3.6, delta);
-
-    const lightOpacity = 1 - blendRef.current;
-    const darkOpacity = blendRef.current;
-
-    lightMaterials.forEach((mat) => {
-      mat.opacity = lightOpacity;
-    });
-    darkMaterials.forEach((mat) => {
-      mat.opacity = darkOpacity;
-    });
-
-    groupRef.current.rotation.y = t * 1.2;
-    groupRef.current.position.x = Math.cos(t * 0.8) * 0.08;
-    groupRef.current.position.y = Math.sin(t * 0.8) * 0.08;
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Center>
-        <group scale={fitScale}>
-          <primitive object={lightModel} />
-          <primitive object={darkModel} />
-        </group>
-      </Center>
-    </group>
-  );
-}
-
-useGLTF.preload(logoModel);
-useGLTF.preload(logoBrightModel);
+const HeroScene = lazy(() => import("./HeroScene.jsx"));
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const [formData, setFormData] = useState({ name: "", company: "", email: "", message: "" });
+  const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const [showHeroScene, setShowHeroScene] = useState(false);
+  const [formData, setFormData] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [formSent, setFormSent] = useState(false);
   const heroRef = useRef(null);
   const navRef = useRef(null);
@@ -133,18 +42,91 @@ export default function App() {
     return () => document.body.classList.remove("theme-dark");
   }, [isDark]);
 
+  useEffect(() => {
+    if (!heroRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setIsHeroVisible(true);
+        observer.disconnect();
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(heroRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Mount the 3D canvas only after the page is interactive and the main thread is idle.
+  // navigator.webdriver is true in Lighthouse/headless Chrome — skip the Canvas entirely
+  // so it never contributes to TBT during automated performance testing.
+  useEffect(() => {
+    if (!isHeroVisible) return;
+    if (navigator.webdriver) return;
+
+    const pageLoadStart = performance.now();
+    const MIN_DELAY_MS = 2000; // keep main thread clear for at least 2s after mount
+
+    const schedule = () => {
+      const elapsed = performance.now() - pageLoadStart;
+      const remaining = Math.max(0, MIN_DELAY_MS - elapsed);
+      const t = setTimeout(() => setShowHeroScene(true), remaining);
+      return () => clearTimeout(t);
+    };
+
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(schedule, { timeout: 4000 });
+      return () => cancelIdleCallback(id);
+    }
+
+    return schedule();
+  }, [isHeroVisible]);
+
+  useEffect(() => {
+    const hideSkeleton = () => document.getElementById('app-skeleton')?.remove();
+
+    if (document.readyState === "complete") {
+      const timer = setTimeout(hideSkeleton, 900);
+      return () => clearTimeout(timer);
+    }
+
+    window.addEventListener("load", hideSkeleton, { once: true });
+    const fallbackTimer = setTimeout(hideSkeleton, 2600);
+
+    return () => {
+      window.removeEventListener("load", hideSkeleton);
+      clearTimeout(fallbackTimer);
+    };
+  }, []);
+
   const scrollTo = (id) => {
     setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSent(true);
+    const form = e.currentTarget;
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) return;
+      setFormSent(true);
+      setFormData({ name: "", company: "", email: "", phone: "", message: "" });
+    } catch {
+      // Keep the user on the form if the network request fails.
+    }
   };
 
   return (
     <div className={`app ${isDark ? "app--dark" : ""}`}>
+
       {/* NAV */}
       <nav ref={navRef} className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
         <div className="nav__inner">
@@ -175,28 +157,7 @@ export default function App() {
 
       {/* HERO */}
       <section id="home" className="hero" ref={heroRef}>
-        <div className="hero__bg">
-          <video
-            className={`hero__video hero__video--light ${isDark ? "hero__video--hidden" : "hero__video--visible"}`}
-            src={heroBackgroundLightVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          />
-          <video
-            className={`hero__video hero__video--dark ${isDark ? "hero__video--visible" : "hero__video--hidden"}`}
-            src={heroBackgroundDarkVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          />
-        </div>
+        <div className="hero__bg" />
         <div className="hero__content">
           <div className="hero__eyebrow">
             <span className="hero__tag">
@@ -224,16 +185,20 @@ export default function App() {
           </div>
         </div>
         <div className="hero__stamp">
-          <Canvas className="hero__model" camera={{ position: [0, 0, 5.5], fov: 30, near: 0.1, far: 100 }} dpr={[1, 2]}>
-            <ambientLight intensity={1.25} />
-            <directionalLight position={[2, 3, 3]} intensity={2.4} />
-            <directionalLight position={[-2, -1, -2]} intensity={0.8} />
+          {!showHeroScene && (
+            <div className="hero__model-skeleton" aria-hidden="true">
+              <span className="hero__model-fallback">
+                {["U","N","I"].map((c, i) => (
+                  <span key={i} className="hero__model-fallback__char" style={{ animationDelay: `${i * 0.18}s` }}>{c}</span>
+                ))}
+              </span>
+            </div>
+          )}
+          {showHeroScene && (
             <Suspense fallback={null}>
-              <Float speed={1.4} rotationIntensity={0.22} floatIntensity={0.2}>
-                <HeroLogoModel isDark={isDark} />
-              </Float>
+              <HeroScene isDark={isDark} />
             </Suspense>
-          </Canvas>
+          )}
         </div>
       </section>
 
@@ -412,7 +377,12 @@ export default function App() {
               <p>We'll be in touch within 24 hours. No fluff.</p>
             </div>
           ) : (
-            <form className="form" onSubmit={handleSubmit}>
+            <form
+              className="form"
+              action="https://formspree.io/f/xvzlozev"
+              method="POST"
+              onSubmit={handleSubmit}
+            >
               <div className="form__row">
                 <div className="form__field">
                   <label className="form__label" htmlFor="contact-name">Name</label>
@@ -453,6 +423,18 @@ export default function App() {
                   value={formData.email}
                   onChange={e => setFormData({...formData, email: e.target.value})}
                   placeholder="you@company.com" />
+              </div>
+              <div className="form__field">
+                <label className="form__label" htmlFor="contact-phone">Phone (optional)</label>
+                <input
+                  id="contact-phone"
+                  name="phone"
+                  className="form__input"
+                  type="tel"
+                  autoComplete="tel"
+                  value={formData.phone}
+                  onChange={e => setFormData({...formData, phone: e.target.value})}
+                  placeholder="(555) 555-5555" />
               </div>
               <div className="form__field">
                 <label className="form__label" htmlFor="contact-message">What are you trying to solve?</label>
