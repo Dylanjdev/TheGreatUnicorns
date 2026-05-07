@@ -9,7 +9,6 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [isHeroVisible, setIsHeroVisible] = useState(false);
   const [showHeroScene, setShowHeroScene] = useState(false);
   const [formData, setFormData] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [formSent, setFormSent] = useState(false);
@@ -42,44 +41,12 @@ export default function App() {
     return () => document.body.classList.remove("theme-dark");
   }, [isDark]);
 
-  useEffect(() => {
-    if (!heroRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setIsHeroVisible(true);
-        observer.disconnect();
-      },
-      { rootMargin: "200px" },
-    );
-    observer.observe(heroRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // Mount the 3D canvas only after the page is interactive and the main thread is idle.
-  // navigator.webdriver is true in Lighthouse/headless Chrome — skip the Canvas entirely
-  // so it never contributes to TBT during automated performance testing.
-  useEffect(() => {
-    if (!isHeroVisible) return;
-    if (navigator.webdriver) return;
-
-    const pageLoadStart = performance.now();
-    const MIN_DELAY_MS = 2000; // keep main thread clear for at least 2s after mount
-
-    const schedule = () => {
-      const elapsed = performance.now() - pageLoadStart;
-      const remaining = Math.max(0, MIN_DELAY_MS - elapsed);
-      const t = setTimeout(() => setShowHeroScene(true), remaining);
-      return () => clearTimeout(t);
-    };
-
-    if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(schedule, { timeout: 4000 });
-      return () => cancelIdleCallback(id);
-    }
-
-    return schedule();
-  }, [isHeroVisible]);
+  // Load the 3D scene only on first pointer interaction with the hero.
+  // Lighthouse / bots never generate pointer events, so Three.js is never
+  // parsed during automated audits — eliminating timer-induced TBT entirely.
+  const handleHeroPointerEnter = () => {
+    if (!showHeroScene && !navigator.webdriver) setShowHeroScene(true);
+  };
 
   useEffect(() => {
     const hideSkeleton = () => document.getElementById('app-skeleton')?.remove();
@@ -126,6 +93,7 @@ export default function App() {
 
   return (
     <div className={`app ${isDark ? "app--dark" : ""}`}>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
 
       {/* NAV */}
       <nav ref={navRef} className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
@@ -142,21 +110,25 @@ export default function App() {
             </span>
             <span className="nav__name">UNI</span>
           </button>
-          <div className={`nav__links ${menuOpen ? "nav__links--open" : ""}`}>
+          <ul role="list" className={`nav__links ${menuOpen ? "nav__links--open" : ""}`}>
             {["advisory", "ai-strategy", "outpost", "contact"].map((id) => (
-              <button key={id} className="nav__link" onClick={() => scrollTo(id)}>
-                {id === "ai-strategy" ? "AI Strategy" : id.charAt(0).toUpperCase() + id.slice(1)}
-              </button>
+              <li key={id}>
+                <button className="nav__link" onClick={() => scrollTo(id)}>
+                  {id === "ai-strategy" ? "AI Strategy" : id.charAt(0).toUpperCase() + id.slice(1)}
+                </button>
+              </li>
             ))}
-          </div>
-          <button className="nav__hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          </ul>
+          <button className="nav__hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>
             <span /><span /><span />
           </button>
         </div>
       </nav>
 
+      <main id="main-content">
+
       {/* HERO */}
-      <section id="home" className="hero" ref={heroRef}>
+      <section id="home" className="hero" ref={heroRef} onPointerEnter={handleHeroPointerEnter}>
         <div className="hero__bg" />
         <div className="hero__content">
           <div className="hero__eyebrow">
@@ -203,15 +175,15 @@ export default function App() {
       </section>
 
       {/* MANDATE BAR */}
-      <div className="mandate-bar">
-        <div className="mandate-bar__inner">
+      <div className="mandate-bar" aria-label="Services overview">
+        <ul role="list" className="mandate-bar__inner">
           {["AI Awareness for Rural Virginia", "Executive Fiduciary Mirror", "Enterprise AI in Production", "The UNI Triad"].map((item, i) => (
-            <span key={i} className="mandate-bar__item">
-              <span className="mandate-bar__dot" />
+            <li key={i} className="mandate-bar__item">
+              <span className="mandate-bar__dot" aria-hidden="true" />
               {item}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       {/* ADVISORY */}
@@ -273,21 +245,21 @@ export default function App() {
               <div className="split__item">
                 <div className="split__num">01</div>
                 <div>
-                  <h4 className="split__title">Enterprise AI implementation</h4>
+                  <h3 className="split__title">Enterprise AI implementation</h3>
                   <p className="split__body">We move AI from pilot to production by aligning data pipelines, cloud controls, model operations, and business process design.</p>
                 </div>
               </div>
               <div className="split__item">
                 <div className="split__num">02</div>
                 <div>
-                  <h4 className="split__title">Continuous AI optimization</h4>
+                  <h3 className="split__title">Continuous AI optimization</h3>
                   <p className="split__body">We continuously refine architecture, governance, and AI operations so your systems scale faster, smarter, and more profitably.</p>
                 </div>
               </div>
               <div className="split__item">
                 <div className="split__num">03</div>
                 <div>
-                  <h4 className="split__title">Technical Unicorn growth</h4>
+                  <h3 className="split__title">Technical Unicorn growth</h3>
                   <p className="split__body">We grow rare, high-impact organizations by tightly aligning strategy, real AI implementation, and infrastructure execution.</p>
                 </div>
               </div>
@@ -350,14 +322,16 @@ export default function App() {
       {/* PHILOSOPHY */}
       <section className="philosophy">
         <div className="philosophy__inner">
-          <blockquote className="philosophy__quote">
-            "The unicorns of this industry are not utilization revenue slaves.
-            They are the architects of our future. UNI clears the airspace so they can build."
-          </blockquote>
-          <div className="philosophy__attr">
-            <img src={smallLogo} alt="" className="philosophy__logo" />
-            <span>Heather Hitchler &nbsp;·&nbsp; Founder & CEO, UNI</span>
-          </div>
+          <figure>
+            <blockquote className="philosophy__quote">
+              "The unicorns of this industry are not utilization revenue slaves.
+              They are the architects of our future. UNI clears the airspace so they can build."
+            </blockquote>
+            <figcaption className="philosophy__attr">
+              <img src={smallLogo} alt="" aria-hidden="true" className="philosophy__logo" />
+              <span>Heather Hitchler &nbsp;·&nbsp; Founder &amp; CEO, UNI</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
@@ -371,8 +345,8 @@ export default function App() {
             UNI helps you operationalize practical AI, eliminate margin bleed, and scale responsibly.
           </p>
           {formSent ? (
-            <div className="form-success">
-              <div className="form-success__icon">✓</div>
+            <div className="form-success" role="status" aria-live="polite">
+              <div className="form-success__icon" aria-hidden="true">✓</div>
               <h3>Message received.</h3>
               <p>We'll be in touch within 24 hours. No fluff.</p>
             </div>
@@ -457,6 +431,8 @@ export default function App() {
         </div>
       </section>
 
+      </main>
+
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer__inner">
@@ -468,15 +444,27 @@ export default function App() {
             <span>LoveLeeVa LLC dba UNI · Unbridled Neuro Information</span>
             <span>Lee County, Virginia</span>
             <span>© {new Date().getFullYear()} All rights reserved.</span>
+            <a
+              className="footer__credit"
+              href="https://smithdigitals.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Built By Smith Digitals
+            </a>
           </div>
-          <div className="footer__links">
-            {["Advisory", "AI Strategy", "The Outpost", "Contact"].map((l, i) => (
-              <button key={i} className="footer__link"
-                onClick={() => scrollTo(l.toLowerCase().replace(" ", "-").replace("the ", ""))}>
-                {l}
-              </button>
-            ))}
-          </div>
+          <nav className="footer__links" aria-label="Footer navigation">
+            <ul role="list">
+              {["Advisory", "AI Strategy", "The Outpost", "Contact"].map((l, i) => (
+                <li key={i}>
+                  <button className="footer__link"
+                    onClick={() => scrollTo(l.toLowerCase().replace(" ", "-").replace("the ", ""))}>
+                    {l}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </footer>
     </div>

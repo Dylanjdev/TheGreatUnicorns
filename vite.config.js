@@ -21,16 +21,42 @@ function asyncCss() {
   }
 }
 
+// Remove the modulepreload hint for the three-vendor chunk.
+// Three.js (~1.5 MB) is only needed after a pointer interaction, never on
+// first load. Keeping its modulepreload causes the browser to fetch it at
+// high priority on the throttled Lighthouse network, stealing bandwidth from
+// react-vendor and the main chunk and inflating LCP by 1-2 s.
+function stripThreePreload() {
+  return {
+    name: 'strip-three-preload',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        return html.replace(
+          /<link rel="modulepreload"[^>]*three-vendor[^>]*>\n?/g,
+          ''
+        )
+      },
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), asyncCss()],
+  plugins: [react(), asyncCss(), stripThreePreload()],
   base: '/',
   build: {
     rollupOptions: {
       output: {
         // Split React/ReactDOM into a separately-cacheable vendor chunk
+        // Split Three.js ecosystem into its own chunk so its parse/eval is
+        // isolated from the main thread critical path.
         manualChunks(id) {
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
             return 'react-vendor'
+          }
+          if (id.includes('node_modules/three/') || id.includes('node_modules/@react-three/')) {
+            return 'three-vendor'
           }
         },
       },
