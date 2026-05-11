@@ -4,6 +4,7 @@ import smallLogo from "./assets/small_logo.png";
 import transparentLogo from "./assets/transparentlogo.png";
 
 const HeroScene = lazy(() => import("./HeroScene.jsx"));
+import WorkshopParticles from "./WorkshopParticles.jsx";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,6 +13,8 @@ export default function App() {
   const [showHeroScene, setShowHeroScene] = useState(false);
   const [formData, setFormData] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [formSent, setFormSent] = useState(false);
+  const [workshopData, setWorkshopData] = useState({ firstName: "", lastName: "", email: "", phone: "", role: "", comfortLevel: "", hopeTo: "", referral: "" });
+  const [workshopSent, setWorkshopSent] = useState(false);
   const heroRef = useRef(null);
   const navRef = useRef(null);
 
@@ -91,6 +94,25 @@ export default function App() {
     }
   };
 
+  const handleWorkshopSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) return;
+      setWorkshopSent(true);
+      setWorkshopData({ firstName: "", lastName: "", email: "", phone: "", role: "", comfortLevel: "", hopeTo: "", referral: "" });
+    } catch {
+      // Keep the user on the form if the network request fails.
+    }
+  };
+
   return (
     <div className={`app ${isDark ? "app--dark" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
@@ -111,7 +133,7 @@ export default function App() {
             <span className="nav__name">UNI</span>
           </button>
           <ul role="list" className={`nav__links ${menuOpen ? "nav__links--open" : ""}`}>
-            {["advisory", "ai-strategy", "outpost", "contact"].map((id) => (
+            {["advisory", "ai-strategy", "outpost", "workshop", "contact"].map((id) => (
               <li key={id}>
                 <button className="nav__link" onClick={() => scrollTo(id)}>
                   {id === "ai-strategy" ? "AI Strategy" : id.charAt(0).toUpperCase() + id.slice(1)}
@@ -135,7 +157,7 @@ export default function App() {
             <span className="hero__tag">
               <span>LoveLeeVa LLC</span>
               <span className="hero__tag-sep" aria-hidden="true">&nbsp;·&nbsp;</span>
-              <span>dba Unbridled Nero Information</span>
+              <span>dba Unbridled Neuro Information</span>
             </span>
           </div>
           <h1 className="hero__h1">
@@ -319,6 +341,159 @@ export default function App() {
         </div>
       </section>
 
+      {/* WORKSHOP SIGNUP */}
+      <section id="workshop" className="section section--workshop">
+        <WorkshopParticles />
+        <div className="section__inner section__inner--narrow workshop__content">
+          <div className="section__label">Growing Local Unicorns · Free Event</div>
+          <h2 className="section__h2">Free Community AI Workshop</h2>
+          <p className="section__lead">
+            Learn practical, everyday ways AI can help streamline your daily life —
+            from handling complex medical claims to figuring out what to make with what you've got.
+            Let's practice responsible, eco-friendly curiosity together.
+          </p>
+          <div className="workshop-meta">
+            <span>Lee County Community</span>
+            <span aria-hidden="true">·</span>
+            <span>Free to Attend</span>
+          </div>
+          {workshopSent ? (
+            <div className="form-success" role="status" aria-live="polite">
+              <div className="form-success__icon" aria-hidden="true">✓</div>
+              <h3>You're signed up!</h3>
+              <p>We'll be in touch with details. See you there.</p>
+            </div>
+          ) : (
+            <form
+              className="form"
+              action="https://formspree.io/f/mlgzaary"
+              method="POST"
+              onSubmit={handleWorkshopSubmit}
+            >
+              <div className="form__row">
+                <div className="form__field">
+                  <label className="form__label" htmlFor="ws-first">First Name</label>
+                  <input
+                    id="ws-first" name="firstName" className="form__input" type="text"
+                    autoComplete="given-name" required placeholder="First name"
+                    value={workshopData.firstName}
+                    onChange={e => setWorkshopData({...workshopData, firstName: e.target.value})} />
+                </div>
+                <div className="form__field">
+                  <label className="form__label" htmlFor="ws-last">Last Name</label>
+                  <input
+                    id="ws-last" name="lastName" className="form__input" type="text"
+                    autoComplete="family-name" required placeholder="Last name"
+                    value={workshopData.lastName}
+                    onChange={e => setWorkshopData({...workshopData, lastName: e.target.value})} />
+                </div>
+              </div>
+              <div className="form__field">
+                <label className="form__label" htmlFor="ws-email">Email</label>
+                <input
+                  id="ws-email" name="email" className="form__input" type="email"
+                  autoComplete="email" required placeholder="you@email.com"
+                  value={workshopData.email}
+                  onChange={e => setWorkshopData({...workshopData, email: e.target.value})} />
+              </div>
+              <div className="form__field">
+                <label className="form__label" htmlFor="ws-phone">
+                  Phone <span className="form__optional">(optional)</span>
+                </label>
+                <input
+                  id="ws-phone" name="phone" className="form__input" type="tel"
+                  autoComplete="tel" placeholder="(555) 555-5555"
+                  value={workshopData.phone}
+                  onChange={e => setWorkshopData({...workshopData, phone: e.target.value})} />
+              </div>
+
+              <fieldset className="form__fieldset">
+                <legend className="form__label">Which best describes you?</legend>
+                <div className="form__radio-group form__radio-group--cards">
+                  {[
+                    { value: "resident", label: "Lee County Resident", sub: "Personal / daily life AI use" },
+                    { value: "business", label: "Local Small Business Owner", sub: "Business / growth AI use" },
+                    { value: "student-educator", label: "Student / Educator", sub: "" },
+                  ].map(opt => (
+                    <label
+                      key={opt.value}
+                      className={`form__radio-card ${workshopData.role === opt.value ? "form__radio-card--selected" : ""}`}
+                    >
+                      <input
+                        type="radio" name="role" value={opt.value} required
+                        className="form__radio-input"
+                        checked={workshopData.role === opt.value}
+                        onChange={() => setWorkshopData({...workshopData, role: opt.value})} />
+                      <span className="form__radio-card__label">{opt.label}</span>
+                      {opt.sub && <span className="form__radio-card__sub">{opt.sub}</span>}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className="form__fieldset">
+                <legend className="form__label">
+                  Current comfort level with AI{" "}
+                  <span className="form__label-hint">(e.g. ChatGPT, Claude)</span>
+                </legend>
+                <div className="form__scale">
+                  <span className="form__scale-pole">Never used it</span>
+                  {[1, 2, 3, 4, 5].map(n => (
+                    <label
+                      key={n}
+                      className={`form__scale-item ${workshopData.comfortLevel === String(n) ? "form__scale-item--selected" : ""}`}
+                    >
+                      <input
+                        type="radio" name="comfortLevel" value={n} required
+                        className="form__radio-input"
+                        checked={workshopData.comfortLevel === String(n)}
+                        onChange={() => setWorkshopData({...workshopData, comfortLevel: String(n)})} />
+                      <span className="form__scale-num">{n}</span>
+                    </label>
+                  ))}
+                  <span className="form__scale-pole">Use it daily</span>
+                </div>
+              </fieldset>
+
+              <div className="form__field">
+                <label className="form__label" htmlFor="ws-hope">
+                  What's the #1 thing you hope to learn at this workshop?
+                </label>
+                <input
+                  id="ws-hope" name="hopeTo" className="form__input" type="text"
+                  placeholder="e.g., How to save time on emails, how to market my local business…"
+                  value={workshopData.hopeTo}
+                  onChange={e => setWorkshopData({...workshopData, hopeTo: e.target.value})} />
+              </div>
+
+              <fieldset className="form__fieldset">
+                <legend className="form__label">How did you hear about this workshop?</legend>
+                <div className="form__radio-group">
+                  {[
+                    { value: "powell-valley-news", label: "Powell Valley News Ad" },
+                    { value: "facebook-social", label: "Facebook / Social Media" },
+                    { value: "word-of-mouth", label: "Word of Mouth / Other" },
+                  ].map(opt => (
+                    <label key={opt.value} className="form__radio-label">
+                      <input
+                        type="radio" name="referral" value={opt.value} required
+                        className="form__radio-input"
+                        checked={workshopData.referral === opt.value}
+                        onChange={() => setWorkshopData({...workshopData, referral: opt.value})} />
+                      <span className="form__radio-text">{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <button className="btn btn--primary btn--full" type="submit">
+                Reserve my spot
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+
       {/* PHILOSOPHY */}
       <section className="philosophy">
         <div className="philosophy__inner">
@@ -455,7 +630,7 @@ export default function App() {
           </div>
           <nav className="footer__links" aria-label="Footer navigation">
             <ul role="list">
-              {["Advisory", "AI Strategy", "The Outpost", "Contact"].map((l, i) => (
+              {["Advisory", "AI Strategy", "The Outpost", "Workshop", "Contact"].map((l, i) => (
                 <li key={i}>
                   <button className="footer__link"
                     onClick={() => scrollTo(l.toLowerCase().replace(" ", "-").replace("the ", ""))}>
@@ -463,6 +638,26 @@ export default function App() {
                   </button>
                 </li>
               ))}
+              <li>
+                <a
+                  className="footer__link"
+                  href="https://www.facebook.com/profile.php?id=61589120580379"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a
+                  className="footer__link"
+                  href="https://www.linkedin.com/company/theunicorntechs/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  LinkedIn
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
