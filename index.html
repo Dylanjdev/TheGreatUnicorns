@@ -33,24 +33,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" />
-    <!-- Google tag: deferred to idle so it never blocks FCP/LCP -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      function _loadGTM() {
-        var s = document.createElement('script');
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-K9HLPTXZJM';
-        s.async = true;
-        document.head.appendChild(s);
-        gtag('js', new Date());
-        gtag('config', 'G-K9HLPTXZJM');
-      }
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(_loadGTM, { timeout: 4000 });
-      } else {
-        setTimeout(_loadGTM, 3000);
-      }
-    </script>
+    <link rel="modulepreload" href="data:text/jsx;base64,aW1wb3J0IHsgY3JlYXRlUm9vdCB9IGZyb20gJ3JlYWN0LWRvbS9jbGllbnQnCmltcG9ydCAnLi9pbmRleC5jc3MnCmltcG9ydCBBcHAgZnJvbSAnLi9BcHAuanN4JwoKY3JlYXRlUm9vdChkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncm9vdCcpKS5yZW5kZXIoCiAgPEFwcCAvPgopCgppZiAoJ3NlcnZpY2VXb3JrZXInIGluIG5hdmlnYXRvciAmJiBpbXBvcnQubWV0YS5lbnYuUFJPRCkgewogIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKCdsb2FkJywgKCkgPT4gewogICAgbmF2aWdhdG9yLnNlcnZpY2VXb3JrZXIucmVnaXN0ZXIoJy9zdy5qcycpLmNhdGNoKCgpID0+IHsKICAgICAgLy8gSWdub3JlIHJlZ2lzdHJhdGlvbiBmYWlsdXJlcyB0byBhdm9pZCBibG9ja2luZyBhcHAgc3RhcnR1cC4KICAgIH0pOwogIH0pOwp9Cg==" />
     <title>The Unicorn Techs</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" /></noscript>
@@ -69,10 +52,10 @@
     @keyframes s-sheen{to{transform:translateX(100%)}}
     @media(max-width:700px){#app-skeleton{padding:18px;gap:42px}.s-line--xl{height:42px;width:92%}.s-line--md,.s-line--sm{width:92%}.s-pill,.s-pill--ghost{width:min(220px,88vw)}}
   </style>
-    <script type="module" crossorigin src="/assets/index-DGJL5BFm.js"></script>
+    <script type="module" crossorigin src="/assets/index-BAPGYtJq.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-S-ySWqyJ.js">
     <link rel="modulepreload" crossorigin href="/assets/react-vendor-pnXm8Ar3.js">
-    <link rel="preload" as="style" crossorigin href="/assets/index-CDtuSo1T.css" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" crossorigin href="/assets/index-CDtuSo1T.css"></noscript>
+    <link rel="preload" as="style" crossorigin href="/assets/index-Bh5C_5kF.css" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" crossorigin href="/assets/index-Bh5C_5kF.css"></noscript>
   </head>
   <body>
     <div id="app-skeleton" aria-hidden="true">
@@ -89,5 +72,36 @@
       </div>
     </div>
     <div id="root"></div>
+    <!-- Google tag: loaded on first interaction to avoid affecting critical-path startup -->
+    <script>
+      var GTM_ID = 'G-K9HLPTXZJM';
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      var _gtmLoaded = false;
+
+      function _loadGTM() {
+        if (_gtmLoaded || navigator.webdriver) return;
+        _gtmLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GTM_ID;
+        s.async = true;
+        document.head.appendChild(s);
+        gtag('js', new Date());
+        gtag('config', GTM_ID);
+        _removeAnalyticsTriggers();
+      }
+
+      function _removeAnalyticsTriggers() {
+        window.removeEventListener('pointerdown', _loadGTM, true);
+        window.removeEventListener('keydown', _loadGTM, true);
+        window.removeEventListener('touchstart', _loadGTM, true);
+      }
+
+      if (!navigator.webdriver) {
+        window.addEventListener('pointerdown', _loadGTM, { once: true, passive: true, capture: true });
+        window.addEventListener('keydown', _loadGTM, { once: true, passive: true, capture: true });
+        window.addEventListener('touchstart', _loadGTM, { once: true, passive: true, capture: true });
+      }
+    </script>
   </body>
 </html>
