@@ -13,64 +13,68 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0A0A0A" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="UNI (Unbridled Neuro Information) is a vendor-neutral AI advisory and implementation firm. We bridge Go-To-Market strategy and technical delivery — eliminating silent margin loss for enterprise and mid-market clients. Fiduciary-grade. No fluff." />
+    <meta name="description" content="UNI, dba Unbridled Neuro Information, provides fiduciary consulting, enterprise AI strategy, and modular edge data center development through The Outpost in Lee County." />
+    <meta name="keywords" content="UNI, Unbridled Neuro Information, LoveLeeVa LLC, fiduciary consulting, enterprise AI strategy, modular edge data center, modular data center development, edge data center infrastructure, rural AI infrastructure, AI compute infrastructure, Lee County data center" />
     <link rel="canonical" href="https://theunicorntechs.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://theunicorntechs.com/" />
-    <meta property="og:title" content="UNI — Stop the Bleed. AI Strategy &amp; Advisory." />
-    <meta property="og:description" content="Vendor-neutral AI advisory and implementation. UNI bridges Go-To-Market strategy and technical delivery — eliminating silent margin loss. Fiduciary-grade. No fluff." />
-    <meta property="og:site_name" content="The Unicorn Techs" />
+    <meta property="og:title" content="UNI | Unbridled Neuro Information" />
+    <meta property="og:description" content="UNI, dba Unbridled Neuro Information, provides fiduciary consulting, enterprise AI strategy, and modular edge data center development through The Outpost in Lee County." />
+    <meta property="og:site_name" content="UNI | Unbridled Neuro Information" />
     <meta property="og:image" content="https://theunicorntechs.com/OgImage.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="UNI — Stop the Bleed. Vendor-neutral AI Advisory &amp; Implementation." />
+    <meta property="og:image:alt" content="UNI — Stop the Bleed. Vendor-neutral AI &amp; IT Consulting Advisory &amp; Implementation." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="UNI — Stop the Bleed. AI Strategy &amp; Advisory." />
-    <meta name="twitter:description" content="Vendor-neutral AI advisory and implementation. UNI bridges Go-To-Market strategy and technical delivery — eliminating silent margin loss. Fiduciary-grade. No fluff." />
+    <meta name="twitter:title" content="UNI | Unbridled Neuro Information" />
+    <meta name="twitter:description" content="UNI, dba Unbridled Neuro Information, provides fiduciary consulting, enterprise AI strategy, and modular edge data center development through The Outpost in Lee County." />
     <meta name="twitter:image" content="https://theunicorntechs.com/OgImage.png" />
-    <meta name="twitter:image:alt" content="UNI — Stop the Bleed. Vendor-neutral AI Advisory &amp; Implementation." />
+    <meta name="twitter:image:alt" content="UNI — Stop the Bleed. Vendor-neutral AI &amp; IT Consulting Advisory &amp; Implementation." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" />
-    <!-- Google tag: deferred to idle so it never blocks FCP/LCP -->
+    <title>UNI | Unbridled Neuro Information</title>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      function _loadGTM() {
-        var s = document.createElement('script');
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-K9HLPTXZJM';
-        s.async = true;
-        document.head.appendChild(s);
-        gtag('js', new Date());
-        gtag('config', 'G-K9HLPTXZJM');
-      }
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(_loadGTM, { timeout: 4000 });
-      } else {
-        setTimeout(_loadGTM, 3000);
-      }
+      (function () {
+        var l = window.location;
+        if (l.search[1] === "/") {
+          var decoded = l.search.slice(1).split("&").map(function (s) {
+            return s.replace(/~and~/g, "&");
+          }).join("?");
+          window.history.replaceState(null, null, decoded + l.hash);
+        }
+      })();
     </script>
-    <title>The Unicorn Techs</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" /></noscript>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:#F5F3EE}
-    #app-skeleton{position:fixed;inset:0;z-index:300;padding:24px clamp(20px,4vw,48px);background:radial-gradient(circle at 10% 20%,rgba(200,169,110,.18) 0%,rgba(245,243,238,.35) 30%,rgba(250,250,248,.96) 70%),linear-gradient(180deg,#f7f4ed 0%,#fafaf8 100%);display:grid;grid-template-rows:auto 1fr;gap:64px;overflow:hidden}
-    #app-skeleton::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.65) 45%,transparent 70%);transform:translateX(-100%);animation:s-sheen 1.35s ease-in-out infinite;pointer-events:none}
-    .s-bar,.s-line,.s-pill{background:linear-gradient(120deg,#e5e0d4 15%,#f5f1e8 45%,#ddd5c7 100%);border:1px solid rgba(140,112,64,.16);border-radius:999px}
-    .s-bar--brand{width:148px;height:46px;display:flex;align-items:center;justify-content:flex-end;padding-right:16px}
-    .s-brand-name{font-family:Georgia,serif;font-size:19px;letter-spacing:.04em;color:#1C1C1E;line-height:1}
-    .s-hero{width:min(640px,100%);display:grid;align-content:center;gap:16px}
-    .s-line{height:16px;border-radius:10px}.s-line--xl{height:54px;width:76%}.s-line--md{height:24px;width:58%}.s-line--sm{width:72%}
-    .s-cta{margin-top:12px;display:flex;gap:14px}
-    .s-pill{height:46px;width:186px}.s-pill--ghost{width:160px}
-    @keyframes s-sheen{to{transform:translateX(100%)}}
-    @media(max-width:700px){#app-skeleton{padding:18px;gap:42px}.s-line--xl{height:42px;width:92%}.s-line--md,.s-line--sm{width:92%}.s-pill,.s-pill--ghost{width:min(220px,88vw)}}
-  </style>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "UNI",
+        "alternateName": "Unbridled Neuro Information",
+        "legalName": "LoveLeeVa LLC",
+        "url": "https://theunicorntechs.com/"
+      }
+    </script>
   </head>
   <body>
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      body{background:#F5F3EE}
+      #app-skeleton{position:fixed;inset:0;z-index:300;padding:24px clamp(20px,4vw,48px);background:radial-gradient(circle at 10% 20%,rgba(200,169,110,.18) 0%,rgba(245,243,238,.35) 30%,rgba(250,250,248,.96) 70%),linear-gradient(180deg,#f7f4ed 0%,#fafaf8 100%);display:grid;grid-template-rows:auto 1fr;gap:64px;overflow:hidden}
+      #app-skeleton::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.65) 45%,transparent 70%);transform:translateX(-100%);animation:s-sheen 1.35s ease-in-out infinite;pointer-events:none}
+      .s-bar,.s-line,.s-pill{background:linear-gradient(120deg,#e5e0d4 15%,#f5f1e8 45%,#ddd5c7 100%);border:1px solid rgba(140,112,64,.16);border-radius:999px}
+      .s-bar--brand{width:148px;height:46px;display:flex;align-items:center;justify-content:flex-end;padding-right:16px}
+      .s-brand-name{font-family:Georgia,serif;font-size:19px;letter-spacing:.04em;color:#1C1C1E;line-height:1}
+      .s-hero{width:min(640px,100%);display:grid;align-content:center;gap:16px}
+      .s-line{height:16px;border-radius:10px}.s-line--xl{height:54px;width:76%}.s-line--md{height:24px;width:58%}.s-line--sm{width:72%}
+      .s-cta{margin-top:12px;display:flex;gap:14px}
+      .s-pill{height:46px;width:186px}.s-pill--ghost{width:160px}
+      @keyframes s-sheen{to{transform:translateX(100%)}}
+      @media(max-width:700px){#app-skeleton{padding:18px;gap:42px}.s-line--xl{height:42px;width:92%}.s-line--md,.s-line--sm{width:92%}.s-pill,.s-pill--ghost{width:min(220px,88vw)}}
+    </style>
     <div id="app-skeleton" aria-hidden="true">
       <div class="s-bar s-bar--brand"><span class="s-brand-name">UNI</span></div>
       <div class="s-hero">
@@ -86,5 +90,36 @@
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- Google tag: loaded on first interaction to avoid affecting critical-path startup -->
+    <script>
+      var GTM_ID = 'G-K9HLPTXZJM';
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      var _gtmLoaded = false;
+
+      function _loadGTM() {
+        if (_gtmLoaded || navigator.webdriver) return;
+        _gtmLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GTM_ID;
+        s.async = true;
+        document.head.appendChild(s);
+        gtag('js', new Date());
+        gtag('config', GTM_ID);
+        _removeAnalyticsTriggers();
+      }
+
+      function _removeAnalyticsTriggers() {
+        window.removeEventListener('pointerdown', _loadGTM, true);
+        window.removeEventListener('keydown', _loadGTM, true);
+        window.removeEventListener('touchstart', _loadGTM, true);
+      }
+
+      if (!navigator.webdriver) {
+        window.addEventListener('pointerdown', _loadGTM, { once: true, passive: true, capture: true });
+        window.addEventListener('keydown', _loadGTM, { once: true, passive: true, capture: true });
+        window.addEventListener('touchstart', _loadGTM, { once: true, passive: true, capture: true });
+      }
+    </script>
   </body>
 </html>

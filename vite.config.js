@@ -33,10 +33,15 @@ function stripThreePreload() {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        return html.replace(
-          /<link rel="modulepreload"[^>]*three-vendor[^>]*>\n?/g,
-          ''
-        )
+        return html
+          .replace(
+            /<link rel="modulepreload"[^>]*three-vendor[^>]*>\n?/g,
+            ''
+          )
+          .replace(
+            /<link rel="modulepreload"[^>]*href="data:text\/jsx[^>]*>\n?/g,
+            ''
+          )
       },
     },
   }
