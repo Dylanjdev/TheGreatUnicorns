@@ -100,10 +100,14 @@ body {
 .app .outpost-card,
 .app .outpost-stat,
 .app .blog-post,
+.app .blog-post__summary,
 .app .blog-post__title,
+.app .blog-post__heading,
+.app .blog-post__overview,
 .app .blog-post__body,
 .app .blog-post__meta,
 .app .blog-post__signature,
+.app .blog-post__toggle,
 .app .form__input,
 .app .form__textarea,
 .app .nav__link,
@@ -963,18 +967,48 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   top: calc(var(--nav-h) + 32px);
 }
 
+.blog__posts {
+  display: grid;
+  gap: 32px;
+}
+
 .blog-post {
   background: var(--cream);
   border: 1px solid var(--mist);
-  padding: clamp(28px, 5vw, 52px);
+  overflow: hidden;
   box-shadow: 0 22px 56px rgba(10, 10, 10, 0.08);
+  transition:
+    border-color 0.24s var(--ease),
+    box-shadow 0.24s var(--ease),
+    transform 0.24s var(--ease);
+}
+
+.blog-post:hover,
+.blog-post[open] {
+  border-color: rgba(140, 112, 64, 0.3);
+  box-shadow: 0 28px 68px rgba(10, 10, 10, 0.11);
+}
+
+.blog-post[open] {
+  transform: translateY(-2px);
+}
+
+.blog-post__summary {
+  display: grid;
+  gap: 14px;
+  padding: clamp(24px, 4vw, 40px);
+  cursor: pointer;
+  list-style: none;
+}
+
+.blog-post__summary::-webkit-details-marker {
+  display: none;
 }
 
 .blog-post__meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 14px;
-  margin-bottom: 22px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -984,7 +1018,6 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
 
 .blog-post__title {
   max-width: 640px;
-  margin-bottom: 26px;
   font-family: var(--font-serif);
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 400;
@@ -992,10 +1025,78 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   color: var(--black);
 }
 
+.blog-post__overview {
+  max-width: 680px;
+  color: var(--charcoal);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.72;
+}
+
+.blog-post__toggle {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--black);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.24s var(--ease);
+}
+
+.blog-post__toggle::after {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(140, 112, 64, 0.36);
+  border-radius: 999px;
+  color: #5F451C;
+  line-height: 1;
+  transition:
+    transform 0.28s var(--ease),
+    border-color 0.24s var(--ease),
+    color 0.24s var(--ease);
+}
+
+.blog-post[open] .blog-post__toggle::after {
+  content: "-";
+  transform: rotate(180deg);
+}
+
+.blog-post__content {
+  padding: 0 clamp(24px, 4vw, 40px) clamp(28px, 5vw, 52px);
+  animation: blog-drop 360ms var(--ease) both;
+  transform-origin: top;
+}
+
+.blog-post[open] .blog-post__content {
+  border-top: 1px solid rgba(140, 112, 64, 0.18);
+  padding-top: 28px;
+}
+
 .blog-post__body {
   display: grid;
-  gap: 18px;
+  gap: 30px;
   color: var(--charcoal);
+}
+
+.blog-post__section {
+  display: grid;
+  gap: 18px;
+}
+
+.blog-post__heading {
+  margin-top: 4px;
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 400;
+  line-height: 1.18;
+  color: var(--black);
 }
 
 .blog-post__body p {
@@ -1029,6 +1130,36 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
 
 .app--dark .blog-post__meta {
   color: #F0D79B;
+}
+
+.app--dark .blog-post__toggle::after {
+  border-color: rgba(240, 215, 155, 0.38);
+  color: #F0D79B;
+}
+
+@keyframes blog-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scaleY(0.98);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-post,
+  .blog-post__toggle,
+  .blog-post__toggle::after {
+    transition: none;
+  }
+
+  .blog-post__content {
+    animation: none;
+  }
 }
 
 /* ── Philosophy ───────────────────────────────────────────── */
@@ -1182,10 +1313,10 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   max-width: var(--max-w);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    "brand links qr"
-    "legal legal legal";
+    "brand links"
+    "legal legal";
   align-items: start;
   gap: 20px 28px;
 }
@@ -1249,68 +1380,6 @@ button { cursor: pointer; font-family: var(--font-sans); border: none; backgroun
   color: #FFF8E8;
 }
 
-.footer__qr {
-  grid-area: qr;
-  display: flex;
-  justify-content: center;
-}
-
-.footer__qr-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
-}
-
-.footer__qr-link {
-  display: inline-block;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.footer__qr-img {
-  width: 100px;
-  height: auto;
-  aspect-ratio: 568 / 546;
-  border: 2px solid rgba(250, 250, 248, 0.16);
-  border-radius: 4px;
-  background: var(--white);
-  padding: 4px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.footer__qr-img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.2);
-}
-
-.footer__qr-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #FFECC2;
-  margin: 0;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.footer__qr-desc {
-  font-size: 11px;
-  color: #F3ECDD;
-  font-weight: 400;
-  margin: 0;
-  line-height: 1.35;
-  max-width: 110px;
-}
-
-.app--dark .footer__qr-img {
-  box-shadow: inset 0 0 0 1px rgba(208, 178, 119, 0.2);
-}
-
-.app--dark .footer__qr-img:hover {
-  box-shadow: inset 0 0 0 1px rgba(208, 178, 119, 0.4), 0 4px 12px rgba(208, 178, 119, 0.15);
-}
-
 .app--dark .footer__credit:hover {
   color: #FFF8E8;
 }
@@ -1366,15 +1435,6 @@ footer.footer a.footer__credit:active {
   color: #FFFFFF !important;
   text-decoration: underline;
   text-underline-offset: 2px;
-}
-
-footer.footer .footer__qr-title {
-  color: #FFFFFF !important;
-}
-
-footer.footer .footer__qr-desc {
-  color: #FFFFFF !important;
-  font-weight: 500;
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
@@ -1546,7 +1606,6 @@ footer.footer .footer__qr-desc {
     grid-template-areas:
       "brand"
       "links"
-      "qr"
       "legal";
     align-items: flex-start;
     gap: 14px;
@@ -1562,15 +1621,6 @@ footer.footer .footer__qr-desc {
   .footer__legal {
     padding-top: 12px;
     gap: 7px 12px;
-  }
-  .footer__qr-img {
-    width: 90px;
-  }
-  .footer__qr-title {
-    font-size: 12px;
-  }
-  .footer__qr-desc {
-    font-size: 10px;
   }
   .mandate-bar__inner { gap: 20px; }
 
@@ -1645,9 +1695,6 @@ footer.footer .footer__qr-desc {
   .footer__link {
     width: 100%;
     font-size: 12px;
-  }
-  .footer__qr-img {
-    width: 80px;
   }
   .footer__legal {
     font-size: 10px;

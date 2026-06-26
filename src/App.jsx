@@ -61,7 +61,221 @@ const routes = {
   },
 };
 
-const navItems = ["advisory", "ai-strategy", "outpost", "blog", "contact"];
+const navItems = ["home", "advisory", "ai-strategy", "outpost", "blog", "contact"];
+
+const blogPosts = [
+  {
+    id: "impact-unicorns-can-make",
+    meta: ["UNI Blog", "The Impact Unicorns Can Make"],
+    date: "June 2026",
+    title: "The Impact Unicorns Can Make",
+    overview:
+      "A first stake in the ground for UNI's larger mission: stop wasting rare builders, move knowledge into impact, and build rural technology infrastructure that keeps opportunity local.",
+    body: [
+      {
+        heading: null,
+        paragraphs: [
+          "I am overdue for this first blog.",
+          "Not because I had nothing to say.",
+          "Because the pieces were still becoming one thing.",
+          "The daily posts. The AI conversations. The rural infrastructure plans. The workforce questions. The business architecture. The conversations about talent, technology, power, land, security, and what happens when brilliant people are left shackled inside systems that were never designed to let them build.",
+          "At first, those may look like separate threads.",
+          "They are not.",
+          "They all come back to one question:",
+          "What happens when we stop wasting the unicorns?",
+        ],
+      },
+      {
+        heading: "What I Mean by Unicorn",
+        paragraphs: [
+          "A unicorn is not a mythical employee on a recruiting slide.",
+          "A unicorn is the person who sees the system underneath the system.",
+          "The one who gets excited about the lab. The one who wants to teach. The one who keeps asking better questions after everyone else has accepted the broken answer. The one who would still be learning the technology even if no one paid them to do it.",
+          "That is not a job title.",
+          "That is a wiring pattern.",
+          "And when organizations find people like that, they usually make one of two choices.",
+          "They either clear the airspace so those people can build, or they shackle them to intake queues, utilization targets, political theater, and “no” disguised as governance.",
+          "I have watched too many brilliant technologists get treated like revenue machinery instead of future-builders.",
+          "That is part of why this exists.",
+        ],
+      },
+      {
+        heading: "The Horn Weighs Heavy",
+        paragraphs: [
+          "There is a responsibility that comes with being the person who sees the matrix.",
+          "It is not always comfortable.",
+          "You see the waste before other people do. You see the risk before it becomes expensive. You see the talent being ignored. You see the process pretending to be strategy. You see the community opportunity being exported. You see the architecture cracking underneath the polished slide deck.",
+          "That is the part people miss.",
+          "Being a unicorn is not about being special.",
+          "It is about being unable to unsee the hard part.",
+          "And once you see it, you have to decide what kind of person you are going to be.",
+          "Do you protect yourself and stay quiet?",
+          "Or do you get involved?",
+          "I have learned something about myself over the years:",
+          "I run toward the hard part.",
+          "Not because it is easy. Not because it is clean. Not because it comes without cost.",
+          "Because somebody has to.",
+        ],
+      },
+      {
+        heading: "Impact Is the Point",
+        paragraphs: [
+          "The real goal is not attention.",
+          "It is not content.",
+          "It is not another business with a clever name and a polished logo.",
+          "The goal is impact.",
+          "Impact happens when knowledge moves. Impact happens when people are allowed to build. Impact happens when the rare thinkers are no longer treated like a threat to the process. Impact happens when communities stop exporting their future because nobody showed them how to participate in it.",
+          "Knowledge that cannot move does not create impact.",
+          "A great idea is not real until it can help someone. A great technologist is not fully alive when they are buried under bureaucracy. A great community cannot grow if every talented kid believes they have to leave home to build a future.",
+          "That is the thread.",
+          "Unicorns are not valuable because they are rare.",
+          "They are valuable because of what they can unlock.",
+        ],
+      },
+      {
+        heading: "Stop Wasting the Builders",
+        paragraphs: [
+          "There are people inside companies, schools, communities, and small towns who already see what needs to happen next.",
+          "They may not have the title. They may not have the funding. They may not have the microphone. They may not have permission.",
+          "But they have the pattern recognition.",
+          "They know where the work is broken. They know where the systems are too slow. They know where customers are hurting. They know which tools are being misused. They know which processes exist only because nobody has been brave enough to bury them.",
+          "These are the people we should be developing.",
+          "Instead, too many organizations bury them.",
+          "Under meetings. Under approvals. Under performative collaboration. Under leadership structures that ask for innovation and then punish anyone who actually changes something.",
+          "That is not a talent problem.",
+          "That is an architecture problem.",
+        ],
+      },
+      {
+        heading: "From Idea to Operating System",
+        paragraphs: [
+          "This is why I think in systems.",
+          "A mission without structure becomes a slogan.",
+          "A strategy without execution becomes theater.",
+          "A vision without infrastructure becomes a pretty document that never touches the ground.",
+          "That is not what I am building.",
+          "The work has to move from thought to architecture.",
+          "For me, that architecture has three parts:",
+          "The Spark is where we name the real problem.",
+          "Not the polite problem. Not the committee-approved problem. The real one.",
+          "The Forge is where ideas become working systems.",
+          "This is where strategy has to survive contact with budgets, people, vendors, timelines, risk, and reality.",
+          "The Outpost is where the philosophy becomes physical.",
+          "Land. Power. Cooling. Compute. Security. Workforce. Training. Community value.",
+          "Because the future is not theoretical.",
+          "AI does not live in a cloud-shaped cartoon. Data does not process itself. Infrastructure does not appear because someone approved a slide deck.",
+          "The digital world has a physical footprint.",
+          "And if we are going to build the next generation of technology, then we need to be honest about what it requires.",
+        ],
+      },
+      {
+        heading: "Solve for Physics, Not the Spiff",
+        paragraphs: [
+          "Too much of the technology industry has been trained to chase the incentive instead of the outcome.",
+          "The spiff. The quarterly number. The vendor preference. The easy margin. The thing that looks good in the forecast.",
+          "But infrastructure does not care about the spiff.",
+          "Physics still wins.",
+          "Power matters. Cooling matters. Distance matters. Latency matters. Maintenance matters. Security matters. People matter.",
+          "If we want AI, automation, edge compute, cloud modernization, and resilient business systems, then we have to build the physical and human foundations that make those things real.",
+          "That is not glamorous work.",
+          "That is why it matters.",
+          "Unicorns understand this.",
+          "They do not just ask, “What can we sell?”",
+          "They ask:",
+          "What actually has to work?",
+        ],
+      },
+      {
+        heading: "Why Rural America Matters",
+        paragraphs: [
+          "For too long, rural communities have been treated like places to extract from.",
+          "Extract the coal. Extract the timber. Extract the land. Extract the labor. Extract the children. Extract the talent. Extract the tax base. Leave the blight.",
+          "I am not interested in another model that exports the value and leaves the burden.",
+          "The question I care about is different:",
+          "What if the infrastructure of the future was built in a way that kept opportunity local?",
+          "Local jobs. Local technical training. Local maintenance. Local energy strategy. Local business growth. Local students learning on real systems before they are told their only option is to leave.",
+          "That is not charity.",
+          "That is architecture.",
+        ],
+      },
+      {
+        heading: "The Harvest",
+        paragraphs: [
+          "The Harvest is not just about power.",
+          "It is about return.",
+          "If rural communities are going to support the infrastructure required for the next generation of technology, then they should not be left standing outside the fence while everyone else monetizes the future.",
+          "They should understand it. They should help build it. They should benefit from it. They should protect their land while using their resources wisely. They should train their students before the concrete is poured. They should design systems that create long-term economic value instead of short-term extraction.",
+          "That is The Harvest.",
+          "Not just energy.",
+          "Return.",
+        ],
+      },
+      {
+        heading: "What Unicorns Actually Create",
+        paragraphs: [
+          "When unicorns are protected, developed, and given room to build, they create more than technical output.",
+          "They create momentum.",
+          "They teach. They connect dots. They challenge lazy assumptions. They find the hidden failure points. They build labs because they want to understand the system with their own hands. They turn frustration into design. They turn curiosity into capability. They turn complexity into something other people can finally use.",
+          "That is impact.",
+          "Not noise. Not branding. Not corporate theater.",
+          "Impact.",
+          "The kind that changes a team. The kind that changes a company. The kind that changes a community. The kind that gives someone else permission to stop shrinking.",
+        ],
+      },
+      {
+        heading: "The Work Ahead",
+        paragraphs: [
+          "This blog is the first stake in the ground.",
+          "The work ahead is bigger than one company, one project, one post, or one conversation.",
+          "It is about building a model where rare thinkers are not wasted.",
+          "Where knowledge is shared instead of hoarded.",
+          "Where rural communities participate in the future of technology instead of being told to watch from a distance.",
+          "Where infrastructure is designed with the land, the people, the power, and the long-term impact in mind.",
+          "Where the builders get air cover.",
+          "Where students can see a future close enough to touch.",
+          "Where the hard part is not avoided.",
+          "It is named.",
+          "Mapped.",
+          "Designed.",
+          "Built.",
+        ],
+      },
+      {
+        heading: "Final Word",
+        paragraphs: [
+          "A unicorn is not mythical.",
+          "A unicorn is the person who runs toward the hard part.",
+          "The person who sees the broken system and starts mapping the fix. The person who wants to share what they know before it dies in a silo. The person who still believes work can mean something when it is tied to impact.",
+          "That is the impact unicorns can make.",
+          "And that is the work I am building toward.",
+          "We Grow Our Own.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "responsible-ai-rural-communities",
+    meta: ["Dear Editor", "UNI Community AI Workshop"],
+    date: "May 2026",
+    title: "Responsible AI belongs in rural communities, too.",
+    overview:
+      "A community letter about responsible AI, rural opportunity, and helping Lee County residents learn practical tools instead of watching the technical revolution from the sidelines.",
+    body: [
+      {
+        heading: null,
+        paragraphs: [
+          "There is a lot of fear right now surrounding Artificial Intelligence and what it means for traditional jobs and rural communities like ours. It is easy to watch the news and assume that the tech industry is just another force leaving Appalachia behind.",
+          "I recently launched UNI (Unbridled Neuro Information), an IT consulting firm right here in Lee County, to prove that doesn't have to be the case. Our core mission is simple: We Grow Our Own.",
+          "For decades, our greatest export hasn't been agriculture - it has been our children. Our youth often leave because they believe they have to move to big cities to find secure, high-paying tech careers. We are changing that narrative.",
+          "By bringing responsible AI education to the grassroots level, we can ensure our local workforce isn't just a passenger in this technical revolution, but an owner of it. AI is not something to fear; it is an incredibly powerful tool that can help our small businesses thrive, streamline our daily lives, and keep our kids working right here at home.",
+          "To help demystify this technology, UNI is hosting a Free Community AI Workshop on May 19th. This session is open to all Lee County residents. We will strip away the complicated jargon and focus purely on how you can practically use AI to your advantage today.",
+          "We do not need to fear the future, and we do not need to wait for outside corporations to save us. Let's learn the tools, embrace the digital economy, and grow our own entrepreneurs.",
+        ],
+      },
+    ],
+    signature: ["Sincerely,", "Heather Hitchler", "Founder & Executive Fiduciary Architect"],
+  },
+];
 
 function normalizePath(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/";
@@ -560,56 +774,44 @@ function BlogSection() {
             generation of technical talent rooted right here at home.
           </p>
         </div>
-        <article className="blog-post" aria-labelledby="blog-title">
-          <div className="blog-post__meta">
-            <span>Dear Editor</span>
-            <span>UNI Community AI Workshop</span>
-          </div>
-          <h3 id="blog-title" className="blog-post__title">
-            Responsible AI belongs in rural communities, too.
-          </h3>
-          <div className="blog-post__body">
-            <p>
-              There is a lot of fear right now surrounding Artificial Intelligence and what it
-              means for traditional jobs and rural communities like ours. It is easy to watch the
-              news and assume that the tech industry is just another force leaving Appalachia
-              behind.
-            </p>
-            <p>
-              I recently launched UNI (Unbridled Neuro Information), an IT consulting firm right
-              here in Lee County, to prove that doesn't have to be the case. Our core mission is
-              simple: We Grow Our Own.
-            </p>
-            <p>
-              For decades, our greatest export hasn't been agriculture - it has been our children.
-              Our youth often leave because they believe they have to move to big cities to find
-              secure, high-paying tech careers. We are changing that narrative.
-            </p>
-            <p>
-              By bringing responsible AI education to the grassroots level, we can ensure our
-              local workforce isn't just a passenger in this technical revolution, but an owner of
-              it. AI is not something to fear; it is an incredibly powerful tool that can help our
-              small businesses thrive, streamline our daily lives, and keep our kids working right
-              here at home.
-            </p>
-            <p>
-              To help demystify this technology, UNI is hosting a Free Community AI Workshop on
-              May 19th. This session is open to all Lee County residents. We will strip away the
-              complicated jargon and focus purely on how you can practically use AI to your
-              advantage today.
-            </p>
-            <p>
-              We do not need to fear the future, and we do not need to wait for outside
-              corporations to save us. Let's learn the tools, embrace the digital economy, and
-              grow our own entrepreneurs.
-            </p>
-          </div>
-          <footer className="blog-post__signature">
-            <span>Sincerely,</span>
-            <strong>Heather Hitchler</strong>
-            <span>Founder &amp; Executive Fiduciary Architect</span>
-          </footer>
-        </article>
+        <div className="blog__posts">
+          {blogPosts.map((post) => (
+            <details className="blog-post" key={post.id}>
+              <summary className="blog-post__summary">
+                <span className="blog-post__meta">
+                  <span>{post.date}</span>
+                  {post.meta.map((item) => (
+                    <span key={item}>{item}</span>
+                  ))}
+                </span>
+                <span id={`${post.id}-title`} className="blog-post__title">
+                  {post.title}
+                </span>
+                <span className="blog-post__overview">{post.overview}</span>
+                <span className="blog-post__toggle" aria-hidden="true">Read blog</span>
+              </summary>
+              <article className="blog-post__content" aria-labelledby={`${post.id}-title`}>
+                <div className="blog-post__body">
+                  {post.body.map((section, sectionIndex) => (
+                    <section className="blog-post__section" key={`${post.id}-${section.heading || sectionIndex}`}>
+                      {section.heading && <h4 className="blog-post__heading">{section.heading}</h4>}
+                      {section.paragraphs.map((paragraph, paragraphIndex) => (
+                        <p key={`${section.heading || sectionIndex}-${paragraphIndex}`}>{paragraph}</p>
+                      ))}
+                    </section>
+                  ))}
+                </div>
+                {post.signature && (
+                  <footer className="blog-post__signature">
+                    <span>{post.signature[0]}</span>
+                    <strong>{post.signature[1]}</strong>
+                    <span>{post.signature[2]}</span>
+                  </footer>
+                )}
+              </article>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -756,23 +958,6 @@ function Footer({ currentPage, handleNavClick }) {
           >
             Built By Smith Digitals
           </a>
-        </div>
-        <div className="footer__qr">
-          <div className="footer__qr-content">
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLScLD7bPXA5Lx75wCtz2BxwWYMg1fvdHrpW1VPjo4_uF1NuEug/viewform"
-              target="_blank"
-              rel="noreferrer"
-              className="footer__qr-link"
-              title="Open Growing Local Unicorns Workshop form"
-            >
-              <img src="/QR.png" alt="QR Code for Growing Local Unicorns AI Workshop" className="footer__qr-img" />
-            </a>
-            <div className="footer__qr-text">
-              <p className="footer__qr-title">Join Us</p>
-              <p className="footer__qr-desc">Scan to learn more about the Growing Local Unicorns Free Community AI Workshop</p>
-            </div>
-          </div>
         </div>
         <nav className="footer__links" aria-label="Footer navigation">
           <ul role="list">
