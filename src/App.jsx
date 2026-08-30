@@ -2,6 +2,20 @@ import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import smallLogo from "./assets/small_logo.png";
 import transparentLogo from "./assets/transparentlogo.png";
+import {
+  advisoryFaqs,
+  advisoryProcess,
+  advisorySeo,
+  advisoryServices,
+  advisoryStructuredData,
+} from "./advisoryContent.js";
+import {
+  aiStrategyFaqs,
+  aiStrategyProcess,
+  aiStrategySeo,
+  aiStrategyServices,
+  aiStrategyStructuredData,
+} from "./aiStrategyContent.js";
 
 const HeroScene = lazy(() => import("./HeroScene.jsx"));
 const WorkshopParticles = lazy(() => import("./WorkshopParticles.jsx"));
@@ -12,34 +26,19 @@ const routes = {
     label: "Home",
     title: "UNI | Unbridled Neuro Information",
     description:
-      "UNI, dba Unbridled Neuro Information, provides fiduciary consulting, enterprise AI strategy, and modular edge data center development through The Outpost in Lee County.",
+      "UNI, dba Unbridled Neuro Information, provides vendor-neutral fiduciary consulting and enterprise AI strategy that connects ambitious plans to technical reality.",
   },
   advisory: {
     path: "/advisory/",
     label: "Advisory",
-    eyebrow: "The UNI Triad · Pillar 01",
-    heading: "The Spark",
-    title: "Advisory | UNI",
-    description:
-      "Executive fiduciary advisory from UNI that pressure-tests AI strategy, technical delivery, and economics with vendor-neutral guidance.",
+    ...advisorySeo,
+    structuredData: advisoryStructuredData,
   },
   "ai-strategy": {
     path: "/ai-strategy/",
     label: "AI Strategy",
-    eyebrow: "The UNI Triad · Pillar 02",
-    heading: "The Forge",
-    title: "AI Strategy | UNI",
-    description:
-      "UNI turns AI strategy into working enterprise systems through disciplined implementation, optimization, cloud architecture, and data hygiene.",
-  },
-  outpost: {
-    path: "/outpost/",
-    label: "The Outpost",
-    eyebrow: "The UNI Triad · Pillar 03",
-    heading: "The Outpost",
-    title: "The Outpost | UNI",
-    description:
-      "The Outpost is UNI's modular edge data center initiative in Lee County for practical AI compute infrastructure and rural opportunity.",
+    ...aiStrategySeo,
+    structuredData: aiStrategyStructuredData,
   },
   blog: {
     path: "/blog/",
@@ -57,11 +56,20 @@ const routes = {
     heading: "Start a conversation",
     title: "Contact | UNI",
     description:
-      "Start a conversation with UNI about practical AI, margin bleed, enterprise implementation, or The Outpost.",
+      "Start a conversation with UNI about vendor-neutral AI advisory, margin bleed, enterprise implementation, or practical technology strategy.",
+  },
+  "quick-look": {
+    path: "/quick-look/",
+    label: "Small Business Quick Look",
+    title: "$75 Small Business Quick Look | UNI",
+    description:
+      "A practical outside look at what is fragile, what is slowing you down, what customers cannot see, and what to fix first—for rural small businesses.",
+    ogImage: "/quick-look-og.png",
+    ogImageAlt: "$75 Small Business Quick Look from UNI—clear next steps for rural small businesses.",
   },
 };
 
-const navItems = ["home", "advisory", "ai-strategy", "outpost", "blog", "contact"];
+const navItems = ["home", "advisory", "ai-strategy", "blog", "contact"];
 
 const blogPosts = [
   {
@@ -311,6 +319,31 @@ function updateMeta(route) {
 
   const twitterDescription = document.querySelector('meta[name="twitter:description"]');
   if (twitterDescription) twitterDescription.setAttribute("content", route.description);
+
+  const socialImage = `https://theunicorntechs.com${route.ogImage || "/OgImage.png"}`;
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) ogImage.setAttribute("content", socialImage);
+
+  const twitterImage = document.querySelector('meta[name="twitter:image"]');
+  if (twitterImage) twitterImage.setAttribute("content", socialImage);
+
+  const socialImageAlt = route.ogImageAlt || "UNI — Stop the Bleed. Vendor-neutral AI & IT consulting.";
+  const ogImageAlt = document.querySelector('meta[property="og:image:alt"]');
+  if (ogImageAlt) ogImageAlt.setAttribute("content", socialImageAlt);
+
+  const twitterImageAlt = document.querySelector('meta[name="twitter:image:alt"]');
+  if (twitterImageAlt) twitterImageAlt.setAttribute("content", socialImageAlt);
+
+  const existingRouteSchema = document.getElementById("route-structured-data");
+  if (route.structuredData) {
+    const routeSchema = existingRouteSchema || document.createElement("script");
+    routeSchema.id = "route-structured-data";
+    routeSchema.type = "application/ld+json";
+    routeSchema.textContent = JSON.stringify(route.structuredData);
+    if (!existingRouteSchema) document.head.appendChild(routeSchema);
+  } else {
+    existingRouteSchema?.remove();
+  }
 }
 
 export default function App() {
@@ -321,10 +354,13 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState(() => normalizePath(window.location.pathname));
   const [formData, setFormData] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [formSent, setFormSent] = useState(false);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
   const heroRef = useRef(null);
   const navRef = useRef(null);
 
   const isHome = currentPage === "home";
+  const isQuickLook = currentPage === "quick-look";
   const currentRoute = useMemo(() => routes[currentPage] || routes.home, [currentPage]);
 
   useEffect(() => {
@@ -364,6 +400,11 @@ export default function App() {
   }, [isDark]);
 
   useEffect(() => {
+    document.body.classList.toggle("quick-look-body", isQuickLook);
+    return () => document.body.classList.remove("quick-look-body");
+  }, [isQuickLook]);
+
+  useEffect(() => {
     updateMeta(currentRoute);
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [currentRoute]);
@@ -378,6 +419,11 @@ export default function App() {
   useEffect(() => {
     const hideSkeleton = () => document.getElementById("app-skeleton")?.remove();
 
+    if (isQuickLook) {
+      hideSkeleton();
+      return undefined;
+    }
+
     if (document.readyState === "complete") {
       const timer = setTimeout(hideSkeleton, 900);
       return () => clearTimeout(timer);
@@ -390,7 +436,7 @@ export default function App() {
       window.removeEventListener("load", hideSkeleton);
       clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [isQuickLook]);
 
   const navigateTo = (slug) => {
     const nextSlug = routes[slug] ? slug : "home";
@@ -411,6 +457,8 @@ export default function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
+    setFormSubmitting(true);
+    setFormError("");
 
     try {
       const response = await fetch(form.action, {
@@ -421,17 +469,21 @@ export default function App() {
         },
       });
 
-      if (!response.ok) return;
+      if (!response.ok) throw new Error("Form submission failed");
       setFormSent(true);
       setFormData({ name: "", company: "", email: "", phone: "", message: "" });
     } catch {
-      // Keep the user on the form if the network request fails.
+      setFormError("We couldn’t send that request. Please try again in a moment.");
+    } finally {
+      setFormSubmitting(false);
     }
   };
 
   const sharedProps = {
     formData,
+    formError,
     formSent,
+    formSubmitting,
     handleHeroPointerEnter,
     handleSubmit,
     heroRef,
@@ -442,10 +494,10 @@ export default function App() {
   };
 
   return (
-    <div className={`app ${isDark ? "app--dark" : ""}`}>
+    <div className={`app ${isDark && !isQuickLook ? "app--dark" : ""} ${isQuickLook ? "app--quick-look" : ""}`}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
 
-      <nav ref={navRef} className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
+      {!isQuickLook && <nav ref={navRef} className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
         <div className="nav__inner">
           <button
             type="button"
@@ -476,17 +528,347 @@ export default function App() {
             <span /><span /><span />
           </button>
         </div>
-      </nav>
+      </nav>}
 
-      <main id="main-content" className={isHome ? "" : "page-main"}>
-        {isHome ? (
+      <main id="main-content" className={isQuickLook ? "quick-look-main" : isHome ? "" : "page-main"}>
+        {isQuickLook ? (
+          <QuickLookPage {...sharedProps} />
+        ) : isHome ? (
           <HomePage {...sharedProps} />
         ) : (
           <RoutePage page={currentPage} {...sharedProps} />
         )}
       </main>
 
-      <Footer currentPage={currentPage} handleNavClick={handleNavClick} />
+      {!isQuickLook && <Footer currentPage={currentPage} handleNavClick={handleNavClick} />}
+    </div>
+  );
+}
+
+const quickLookReviewItems = [
+  {
+    icon: "shield",
+    title: "Cybersecurity & IT resilience",
+    body: "Practical weak spots, backups, access, and business continuity.",
+  },
+  {
+    icon: "flow",
+    title: "Everyday business processes",
+    body: "Where repeated work, bottlenecks, or brittle handoffs slow you down.",
+  },
+  {
+    icon: "eye",
+    title: "Customer & market visibility",
+    body: "How easy you are to find, understand, trust, and contact online.",
+  },
+  {
+    icon: "arrow",
+    title: "Your most important next steps",
+    body: "A short, prioritized path forward—without a giant consulting plan.",
+  },
+];
+
+const quickLookDeliverables = [
+  { icon: "clock", title: "60-minute owner walkthrough" },
+  { icon: "paper", title: "Two-page findings summary" },
+  { icon: "list", title: "Top 5 prioritized actions" },
+  { icon: "chat", title: "20-minute results review" },
+];
+
+function QuickLookIcon({ type }) {
+  const iconProps = {
+    viewBox: "0 0 32 32",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    "aria-hidden": "true",
+  };
+
+  return (
+    <svg {...iconProps}>
+      {type === "shield" && <><path d="M16 3.5 26 7v7.2c0 6.4-4.1 11.4-10 14.3-5.9-2.9-10-7.9-10-14.3V7l10-3.5Z" /><path d="m11.5 16 3 3 6.5-7" /></>}
+      {type === "flow" && <><rect x="3.5" y="5" width="8" height="6" rx="1" /><rect x="20.5" y="21" width="8" height="6" rx="1" /><path d="M11.5 8h5a4 4 0 0 1 4 4v9M20.5 24h-5a4 4 0 0 1-4-4v-2M8 15l3.5 3.5L15 15" /></>}
+      {type === "eye" && <><path d="M2.8 16s4.5-7.3 13.2-7.3S29.2 16 29.2 16 24.7 23.3 16 23.3 2.8 16 2.8 16Z" /><circle cx="16" cy="16" r="3.8" /></>}
+      {type === "arrow" && <><path d="M5 26 26 5M15 5h11v11" /><path d="M5 8v18h18" /></>}
+      {type === "clock" && <><circle cx="16" cy="16" r="12" /><path d="M16 9v7l5 3" /></>}
+      {type === "paper" && <><path d="M8 3h11l6 6v20H8z" /><path d="M19 3v7h6M12 16h9M12 21h9" /></>}
+      {type === "list" && <><path d="m4 8 2 2 3.5-4M13 8h15M4 17l2 2 3.5-4M13 17h15M4 26l2 2 3.5-4M13 26h15" /></>}
+      {type === "chat" && <><path d="M5 5h22v17H15l-7 5v-5H5z" /><path d="M10 11h12M10 16h8" /></>}
+      {type === "check" && <path d="m7 16 6 6L26 9" />}
+      {type === "spark" && <><path d="M16 2v7M16 23v7M2 16h7M23 16h7M6.1 6.1l5 5M20.9 20.9l5 5M25.9 6.1l-5 5M11.1 20.9l-5 5" /><circle cx="16" cy="16" r="2.5" /></>}
+    </svg>
+  );
+}
+
+function QuickLookMark() {
+  return (
+    <a className="ql-mark" href="/" aria-label="UNI home">
+      <span className="ql-mark__uni">UNI</span>
+      <span className="ql-mark__rule" aria-hidden="true" />
+      <span className="ql-mark__name">Unbridled Neuro Information</span>
+    </a>
+  );
+}
+
+function QuickLookPage({ formData, formError, formSent, formSubmitting, handleSubmit, setFormData }) {
+  const [showMobileCta, setShowMobileCta] = useState(false);
+
+  useEffect(() => {
+    const updateMobileCta = () => {
+      const hero = document.querySelector(".ql-hero");
+      const reserve = document.getElementById("reserve");
+      if (!hero || !reserve) return;
+
+      const hasPassedHero = window.scrollY > hero.offsetTop + hero.offsetHeight * 0.72;
+      const hasReachedForm = window.scrollY + window.innerHeight > reserve.offsetTop + 120;
+      setShowMobileCta(hasPassedHero && !hasReachedForm);
+    };
+
+    updateMobileCta();
+    window.addEventListener("scroll", updateMobileCta, { passive: true });
+    window.addEventListener("resize", updateMobileCta);
+    return () => {
+      window.removeEventListener("scroll", updateMobileCta);
+      window.removeEventListener("resize", updateMobileCta);
+    };
+  }, []);
+
+  return (
+    <div className="quick-look">
+      <header className="ql-header">
+        <div className="ql-shell ql-header__inner">
+          <QuickLookMark />
+          <a className="ql-header__cta" href="#reserve">Request a quick look <span aria-hidden="true">→</span></a>
+        </div>
+      </header>
+
+      <section className="ql-hero" aria-labelledby="quick-look-title">
+        <div className="ql-shell ql-hero__grid">
+          <div className="ql-hero__copy">
+            <p className="ql-kicker"><span aria-hidden="true">✦</span> Built for rural small businesses</p>
+            <h1 id="quick-look-title">
+              Small business.
+              <span>Clear next steps.</span>
+            </h1>
+            <p className="ql-hero__lead">
+              A practical outside look at what is fragile, what is slowing you down,
+              what customers cannot see—and what to fix first.
+            </p>
+            <div className="ql-hero__actions">
+              <a className="ql-button ql-button--primary" href="#reserve">Request my quick look <span aria-hidden="true">→</span></a>
+              <a className="ql-text-link" href="#included">See what’s included</a>
+            </div>
+            <p className="ql-hero__reassurance">
+              <QuickLookIcon type="check" /> One business · One location · Up to 15 workers
+            </p>
+          </div>
+
+          <div className="ql-offer-card" aria-label="$75 flat-rate offer">
+            <span className="ql-offer-card__note">One clear look.</span>
+            <div className="ql-price"><sup>$</sup>75</div>
+            <p>flat rate</p>
+            <span className="ql-offer-card__scribble" aria-hidden="true" />
+            <ul role="list">
+              <li><QuickLookIcon type="check" /> No subscriptions</li>
+              <li><QuickLookIcon type="check" /> No surprise add-ons</li>
+              <li><QuickLookIcon type="check" /> No sales pressure</li>
+            </ul>
+          </div>
+        </div>
+        <div className="ql-hero__landscape" aria-hidden="true">
+          <svg viewBox="0 0 1440 160" preserveAspectRatio="none">
+            <path className="ql-landscape__back" d="M0 139 123 86l83 33 127-71 110 69 84-39 111 38 121-79 137 86 110-55 82 57 114-49 160 70v14H0Z" />
+            <path className="ql-landscape__front" d="M0 154 113 116l91 23 111-45 132 57 98-31 122 36 116-47 143 44 103-24 127 37 118-35 86 40v9H0Z" />
+          </svg>
+        </div>
+      </section>
+
+      <section id="included" className="ql-section ql-review">
+        <div className="ql-shell">
+          <div className="ql-section-heading">
+            <p className="ql-eyebrow">The outside perspective</p>
+            <h2>What we look at</h2>
+            <p>Four parts of the business that quietly shape your risk, your time, and your ability to grow.</p>
+          </div>
+          <div className="ql-review__grid">
+            {quickLookReviewItems.map((item, index) => (
+              <article className="ql-review-card" key={item.title}>
+                <span className="ql-review-card__number">0{index + 1}</span>
+                <span className="ql-icon"><QuickLookIcon type={item.icon} /></span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="ql-section ql-deliverables">
+        <div className="ql-shell ql-deliverables__grid">
+          <div className="ql-deliverables__intro">
+            <p className="ql-eyebrow ql-eyebrow--light">Useful, not overwhelming</p>
+            <h2>What you receive</h2>
+            <p>
+              You leave knowing what matters, what can wait, and the first five things worth your attention.
+            </p>
+          </div>
+          <div className="ql-deliverables__list">
+            {quickLookDeliverables.map((item) => (
+              <div className="ql-deliverable" key={item.title}>
+                <span><QuickLookIcon type={item.icon} /></span>
+                <h3>{item.title}</h3>
+                <QuickLookIcon type="check" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="ql-section ql-process">
+        <div className="ql-shell">
+          <div className="ql-section-heading ql-section-heading--center">
+            <p className="ql-eyebrow">Simple by design</p>
+            <h2>From “I’m not sure” to a plan.</h2>
+          </div>
+          <div className="ql-process__steps">
+            <article>
+              <span>1</span>
+              <h3>Tell us about your business</h3>
+              <p>Share the basics and what has been keeping you up at night.</p>
+            </article>
+            <article>
+              <span>2</span>
+              <h3>Walk through it together</h3>
+              <p>We spend 60 focused minutes looking at how things work today.</p>
+            </article>
+            <article>
+              <span>3</span>
+              <h3>Get your priority list</h3>
+              <p>Receive a concise summary and a 20-minute results review.</p>
+            </article>
+          </div>
+          <div className="ql-safety-note">
+            <span className="ql-safety-note__spark"><QuickLookIcon type="spark" /></span>
+            <p><strong>No passwords. No security scanning. No sales pressure.</strong><br />This is a practical owner’s review—not a penetration test or a full technical audit.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="reserve" className="ql-section ql-reserve">
+        <div className="ql-shell ql-reserve__grid">
+          <div className="ql-reserve__copy">
+            <p className="ql-eyebrow">Ready for a quick look?</p>
+            <h2>Let’s find the first thing worth fixing.</h2>
+            <p>
+              Send a few details below. We’ll follow up to confirm fit and schedule your walkthrough.
+            </p>
+            <div className="ql-reserve__price"><strong>$75</strong><span>one-time<br />flat rate</span></div>
+            <div className="ql-reserve__fit">
+              <span><QuickLookIcon type="check" /></span>
+              <p><strong>Best fit:</strong> One rural small business, one location, and up to 15 workers.</p>
+            </div>
+          </div>
+
+          <div className="ql-form-card">
+            {formSent ? (
+              <div className="ql-form-success" role="status" aria-live="polite">
+                <span><QuickLookIcon type="check" /></span>
+                <p className="ql-eyebrow">Request received</p>
+                <h3>We’ll be in touch soon.</h3>
+                <p>Thanks for trusting UNI with a first look at your business.</p>
+              </div>
+            ) : (
+              <form action="https://formspree.io/f/xvzlozev" method="POST" onSubmit={handleSubmit}>
+                <input type="hidden" name="_subject" value="New Small Business Quick Look request" />
+                <input type="hidden" name="offer" value="$75 Small Business Quick Look" />
+                <input type="hidden" name="source" value="Facebook landing page" />
+                <div className="ql-form__row">
+                  <label>
+                    <span>Your name</span>
+                    <input
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      value={formData.name}
+                      onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                      placeholder="Full name"
+                    />
+                  </label>
+                  <label>
+                    <span>Business name</span>
+                    <input
+                      name="company"
+                      type="text"
+                      autoComplete="organization"
+                      required
+                      value={formData.company}
+                      onChange={(event) => setFormData({ ...formData, company: event.target.value })}
+                      placeholder="Your business"
+                    />
+                  </label>
+                </div>
+                <div className="ql-form__row">
+                  <label>
+                    <span>Email</span>
+                    <input
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={formData.email}
+                      onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+                      placeholder="you@example.com"
+                    />
+                  </label>
+                  <label>
+                    <span>Phone</span>
+                    <input
+                      name="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
+                      placeholder="(555) 555-5555"
+                    />
+                  </label>
+                </div>
+                <label>
+                  <span>What would you most like help seeing clearly? <em>Optional</em></span>
+                  <textarea
+                    name="message"
+                    rows="4"
+                    value={formData.message}
+                    onChange={(event) => setFormData({ ...formData, message: event.target.value })}
+                    placeholder="A process, technology concern, visibility issue, or simply ‘I’m not sure where to start.’"
+                  />
+                </label>
+                <button className="ql-button ql-button--primary ql-button--full" type="submit" disabled={formSubmitting}>
+                  {formSubmitting ? "Sending request…" : "Request my quick look"} {!formSubmitting && <span aria-hidden="true">→</span>}
+                </button>
+                {formError && <p className="ql-form__error" role="alert">{formError}</p>}
+                <p className="ql-form__fine-print">No payment is collected on this page. We’ll confirm fit and scheduling first.</p>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <footer className="ql-footer">
+        <div className="ql-shell ql-footer__inner">
+          <QuickLookMark />
+          <p>Practical clarity for rural small businesses.</p>
+          <a href="https://theunicorntechs.com/">theunicorntechs.com</a>
+          <span>© {new Date().getFullYear()} LoveLeeVa LLC</span>
+        </div>
+      </footer>
+
+      <a className={`ql-mobile-cta ${showMobileCta ? "ql-mobile-cta--visible" : ""}`} href="#reserve">
+        Request a quick look <span>$75</span>
+      </a>
     </div>
   );
 }
@@ -498,7 +880,6 @@ function HomePage(props) {
       <MandateBar />
       <AdvisorySection />
       <AiStrategySection />
-      <OutpostSection navigateTo={props.navigateTo} />
       <BlogSection />
       <PhilosophySection />
       <ContactSection {...props} />
@@ -512,9 +893,18 @@ function RoutePage({ page, ...props }) {
   return (
     <>
       <PageMasthead route={route} {...props} />
-      {page === "advisory" && <AdvisorySection />}
-      {page === "ai-strategy" && <AiStrategySection />}
-      {page === "outpost" && <OutpostSection navigateTo={props.navigateTo} />}
+      {page === "advisory" && (
+        <>
+          <AdvisorySection />
+          <AdvisoryDetailSection navigateTo={props.navigateTo} />
+        </>
+      )}
+      {page === "ai-strategy" && (
+        <>
+          <AiStrategySection />
+          <AiStrategyDetailSection navigateTo={props.navigateTo} />
+        </>
+      )}
       {page === "blog" && <BlogSection />}
       {page === "contact" && <ContactSection {...props} />}
       {page !== "contact" && <PhilosophySection />}
@@ -526,9 +916,14 @@ function PageMasthead({ handleHeroPointerEnter, isDark, route, showHeroScene }) 
   return (
     <section className="page-hero" onPointerEnter={handleHeroPointerEnter}>
       <div className="page-hero__content">
+        <nav className="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <span>{route.label}</span>
+        </nav>
         <div className="section__label">{route.eyebrow}</div>
         <h1 className="page-hero__title">{route.heading}</h1>
-        <p className="page-hero__lead">{route.description}</p>
+        <p className="page-hero__lead">{route.heroDescription || route.description}</p>
       </div>
       <div className="page-hero__stamp">
         {!showHeroScene && (
@@ -619,32 +1014,33 @@ function AdvisorySection() {
   return (
     <section id="advisory" className="section section--white">
       <div className="section__inner">
-        <div className="section__label">The UNI Triad · Pillar 01</div>
-        <h2 className="section__h2">The Spark (Executive Fiduciary Advisory)</h2>
+        <div className="section__label">Independent · Vendor-neutral · Executive-level</div>
+        <h2 className="section__h2">Executive AI &amp; Technology Advisory</h2>
         <p className="section__lead">
-          UNI functions as an Executive Fiduciary Mirror, eliminating the trust gap between
-          ambitious Go-To-Market strategy and technical delivery. Our high-intensity Skull Sessions
-          pressure-test decisions so your AI strategy, engineering execution, and economics stay aligned.
+          UNI gives business leaders an independent view of AI strategy, technology investments,
+          vendor claims, and delivery risk. Our high-intensity Skull Sessions expose the trust gap
+          between ambitious go-to-market promises and what teams can actually build, operate, and
+          support—before that gap turns into lost margin.
         </p>
         <div className="cards">
           {[
             {
-              title: "Skull Session Clarity",
-              body: "We expose hidden inefficiencies in operations, architecture, and AI readiness so leadership can make fast, high-confidence decisions.",
+              title: "AI Strategy Clarity",
+              body: "We expose hidden constraints in operations, architecture, data, and AI readiness so leadership can make fast, defensible investment decisions.",
               stat: "AI",
-              statLabel: "Readiness first",
+              statLabel: "Strategy first",
             },
             {
-              title: "Trust Gap Elimination",
-              body: "We bridge boardroom strategy to engineering reality with fiduciary-grade guidance and no vendor bias, so AI plans become executable systems.",
+              title: "Vendor-Neutral Evaluation",
+              body: "We assess vendors, platforms, proposals, and delivery plans against business requirements with no commissions, quotas, or product bias.",
               stat: "P&L",
               statLabel: "Owner aligned",
             },
             {
-              title: "Physics Over Hype",
-              body: "We solve for physics, not the spiff. Every recommendation is measured by real AI performance, delivery risk, and total margin impact.",
+              title: "Technical Due Diligence",
+              body: "We pressure-test architecture, economics, staffing, security, and implementation risk so the recommendation can survive contact with reality.",
               stat: "0",
-              statLabel: "Vendor spiff",
+              statLabel: "Vendor conflicts",
             },
           ].map((card, i) => (
             <div key={i} className="card">
@@ -662,31 +1058,117 @@ function AdvisorySection() {
   );
 }
 
+function AdvisoryDetailSection({ navigateTo }) {
+  return (
+    <section className="advisory-detail" aria-labelledby="advisory-services-title">
+      <div className="section__inner">
+        <div className="advisory-detail__intro">
+          <div>
+            <div className="section__label">What UNI advises on</div>
+            <h2 id="advisory-services-title" className="section__h2">
+              Independent advice before expensive technology decisions
+            </h2>
+          </div>
+          <p>
+            The right AI decision is not always a new platform or a larger implementation. UNI helps
+            leadership determine what is worth doing, what the organization can realistically
+            support, and where vendor incentives or internal assumptions are distorting the plan.
+          </p>
+        </div>
+
+        <div className="advisory-services">
+          {advisoryServices.map((service) => (
+            <article className="advisory-service" key={service.title}>
+              <h3>{service.title}</h3>
+              <p>{service.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <section className="advisory-process" aria-labelledby="advisory-process-title">
+          <div className="section__label section__label--light">How the advisory process works</div>
+          <h2 id="advisory-process-title">From uncertainty to a decision leadership can defend</h2>
+          <div className="advisory-process__grid">
+            {advisoryProcess.map((step) => (
+              <article key={step.number}>
+                <span>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="advisory-fit" aria-labelledby="advisory-fit-title">
+          <div>
+            <div className="section__label">When to call UNI</div>
+            <h2 id="advisory-fit-title">Bring in an independent advisor when the decision is consequential</h2>
+          </div>
+          <ul>
+            <li>You are evaluating an AI vendor, platform, or major technology proposal.</li>
+            <li>Leadership and delivery teams disagree about what is feasible.</li>
+            <li>An AI pilot is not producing a credible path to operating value.</li>
+            <li>Technology costs are rising while margins or delivery confidence are falling.</li>
+            <li>You need technical diligence without hiring a full-time executive.</li>
+          </ul>
+        </section>
+
+        <section className="advisory-faq" aria-labelledby="advisory-faq-title">
+          <div className="section__label">AI advisory FAQ</div>
+          <h2 id="advisory-faq-title">Questions business leaders ask before engaging UNI</h2>
+          <div className="advisory-faq__list">
+            {advisoryFaqs.map((item) => (
+              <details key={item.question}>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="advisory-cta" aria-labelledby="advisory-cta-title">
+          <div>
+            <div className="section__label section__label--light">Start with the real decision</div>
+            <h2 id="advisory-cta-title">Pressure-test the plan before you fund it.</h2>
+            <p>
+              Tell UNI what leadership is deciding, where the story stops adding up, or which AI
+              investment needs an independent second look.
+            </p>
+          </div>
+          <button className="btn btn--light" onClick={() => navigateTo("contact")}>
+            Talk with an AI advisor <span aria-hidden="true">→</span>
+          </button>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function AiStrategySection() {
   return (
     <section id="ai-strategy" className="section section--dark">
       <div className="section__inner">
-        <div className="section__label section__label--light">The UNI Triad · Pillar 02</div>
-        <h2 className="section__h2 section__h2--light">The Forge (Implementation &amp; Growth)</h2>
+        <div className="section__label section__label--light">Strategy · Implementation · Operations</div>
+        <h2 className="section__h2 section__h2--light">Enterprise AI Strategy &amp; Implementation</h2>
         <p className="section__lead section__lead--light">
-          This is where strategy becomes working systems. UNI actively implements, optimizes,
-          and scales technical ecosystems with disciplined AI operations, cloud architecture,
-          and data hygiene that produce real growth.
+          The Forge is where AI strategy becomes a working production system. UNI aligns use cases,
+          data, cloud architecture, governance, workflow design, implementation, and ongoing
+          operations so AI creates measurable value beyond the pilot.
         </p>
         <div className="split">
           <div className="split__text">
             {[
               {
-                title: "Enterprise AI implementation",
-                body: "We move AI from pilot to production by aligning data pipelines, cloud controls, model operations, and business process design.",
+                title: "Roadmap to production",
+                body: "We prioritize use cases by value and feasibility, then map the data, integration, governance, people, and delivery work required to operate them reliably.",
               },
               {
-                title: "Continuous AI optimization",
-                body: "We continuously refine architecture, governance, and AI operations so your systems scale faster, smarter, and more profitably.",
+                title: "Production AI engineering",
+                body: "We design and implement AI systems that fit real business workflows, technical standards, security controls, and operating constraints.",
               },
               {
-                title: "Technical Unicorn growth",
-                body: "We grow rare, high-impact organizations by tightly aligning strategy, real AI implementation, and infrastructure execution.",
+                title: "Continuous AI operations",
+                body: "We measure quality, cost, latency, reliability, adoption, and business impact so deployed systems keep improving after launch.",
               },
             ].map((item, i) => (
               <div key={item.title} className="split__item">
@@ -700,9 +1182,9 @@ function AiStrategySection() {
           </div>
           <div className="split__metrics">
             {[
-              { val: "3x", label: "Faster AI deployment velocity" },
-              { val: "24/7", label: "Operational AI performance discipline" },
-              { val: "100%", label: "Strategy-to-delivery alignment focus" },
+              { val: "Value", label: "Business outcome before technology" },
+              { val: "Live", label: "Production readiness beyond pilots" },
+              { val: "Owned", label: "Clear governance and operations" },
             ].map((m, i) => (
               <div key={i} className="metric">
                 <div className="metric__val">{m.val}</div>
@@ -716,47 +1198,87 @@ function AiStrategySection() {
   );
 }
 
-function OutpostSection({ navigateTo }) {
+function AiStrategyDetailSection({ navigateTo }) {
   return (
-    <section id="outpost" className="section section--outpost">
+    <section className="advisory-detail strategy-detail" aria-labelledby="strategy-services-title">
       <div className="section__inner">
-        <div className="section__label">The UNI Triad · Pillar 03</div>
-        <h2 className="section__h2">The Outpost (Capital Infrastructure Development)</h2>
-        <p className="section__lead">
-          The Outpost is UNI's modular edge data center initiative in Lee County. Developed through
-          LoveLeeVa LLC dba Unbridled Neuro Information, the project advances practical AI compute
-          infrastructure in a rural setting while supporting long-term economic opportunity through
-          disciplined infrastructure development.
-        </p>
-        <div className="outpost-grid">
-          <div className="outpost-card outpost-card--featured">
-            <div className="outpost-card__label">Community impact model</div>
-            <h3 className="outpost-card__title">We Grow Our Own in action</h3>
-            <p className="outpost-card__body">
-              Designed for edge computing, AI workloads, and resilient digital infrastructure, The
-              Outpost brings modular data center capability to underserved markets with a
-              disciplined, community-centered approach. The initiative pairs physical infrastructure
-              development with hands-on technical learning for local vocational school students,
-              helping grow the workforce, capability, and opportunity required for rural AI
-              infrastructure to succeed locally.
-            </p>
-            <button className="btn btn--outpost" onClick={() => navigateTo("contact")}>
-              Build with UNI <span aria-hidden="true">→</span>
-            </button>
+        <div className="advisory-detail__intro">
+          <div>
+            <div className="section__label">What The Forge delivers</div>
+            <h2 id="strategy-services-title" className="section__h2">
+              An enterprise AI operating system—not a collection of pilots
+            </h2>
           </div>
-          {[
-            { val: "AI", label: "Awareness + training", sub: "Rural workforce growth" },
-            { val: "Local", label: "Vocational partnerships", sub: "Lee County students" },
-            { val: "Real", label: "Hands-on projects", sub: "Applied infrastructure" },
-            { val: "Rural", label: "Economic expansion", sub: "Community-first outcomes" },
-          ].map((s, i) => (
-            <div key={i} className="outpost-stat">
-              <div className="outpost-stat__val">{s.val}</div>
-              <div className="outpost-stat__label">{s.label}</div>
-              <div className="outpost-stat__sub">{s.sub}</div>
-            </div>
+          <p>
+            Production AI requires more than selecting a model. UNI connects the business case to
+            data, architecture, security, governance, delivery, adoption, and ongoing ownership so
+            every layer of the system is designed to work together.
+          </p>
+        </div>
+
+        <div className="advisory-services">
+          {aiStrategyServices.map((service) => (
+            <article className="advisory-service" key={service.title}>
+              <h3>{service.title}</h3>
+              <p>{service.body}</p>
+            </article>
           ))}
         </div>
+
+        <section className="advisory-process" aria-labelledby="strategy-process-title">
+          <div className="section__label section__label--light">The Forge operating model</div>
+          <h2 id="strategy-process-title">Align the outcome. Build the system. Operate the capability.</h2>
+          <div className="advisory-process__grid">
+            {aiStrategyProcess.map((step) => (
+              <article key={step.number}>
+                <span>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="advisory-fit" aria-labelledby="strategy-fit-title">
+          <div>
+            <div className="section__label">When The Forge fits</div>
+            <h2 id="strategy-fit-title">Move from AI activity to an accountable production capability</h2>
+          </div>
+          <ul>
+            <li>Your organization has AI pilots but no credible production roadmap.</li>
+            <li>Use cases are multiplying without shared priorities, governance, or ownership.</li>
+            <li>Data and integration gaps keep blocking implementation.</li>
+            <li>AI costs, quality, security, or vendor dependencies are difficult to measure.</li>
+            <li>Leadership needs strategy and technical delivery to move as one system.</li>
+          </ul>
+        </section>
+
+        <section className="advisory-faq" aria-labelledby="strategy-faq-title">
+          <div className="section__label">Enterprise AI strategy FAQ</div>
+          <h2 id="strategy-faq-title">Questions teams ask when AI has to work in production</h2>
+          <div className="advisory-faq__list">
+            {aiStrategyFaqs.map((item) => (
+              <details key={item.question}>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="advisory-cta" aria-labelledby="strategy-cta-title">
+          <div>
+            <div className="section__label section__label--light">Build beyond the pilot</div>
+            <h2 id="strategy-cta-title">Turn the AI roadmap into a production system.</h2>
+            <p>
+              Bring UNI the use case, stalled pilot, fragmented roadmap, or delivery problem that
+              needs a practical path from strategy to operation.
+            </p>
+          </div>
+          <button className="btn btn--light" onClick={() => navigateTo("contact")}>
+            Discuss your AI strategy <span aria-hidden="true">→</span>
+          </button>
+        </section>
       </div>
     </section>
   );
@@ -948,7 +1470,6 @@ function Footer({ currentPage, handleNavClick }) {
         </div>
         <div className="footer__legal">
           <span>LoveLeeVa LLC dba UNI · Unbridled Neuro Information</span>
-          <span>Developing modular data center infrastructure through The Outpost in Lee County.</span>
           <span>© {new Date().getFullYear()} All rights reserved.</span>
           <a
             className="footer__credit"
