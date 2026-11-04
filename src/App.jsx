@@ -16,6 +16,18 @@ import {
   aiStrategyServices,
   aiStrategyStructuredData,
 } from "./aiStrategyContent.js";
+import {
+  vendorEvaluationFaqs,
+  vendorEvaluationRubric,
+  vendorEvaluationSeo,
+  vendorEvaluationStructuredData,
+} from "./vendorEvaluationContent.js";
+import {
+  businessProcessAutomationArticleHtml,
+  businessProcessAutomationSeo,
+  businessProcessAutomationStructuredData,
+  businessProcessAutomationToc,
+} from "./businessProcessAutomationContent.js";
 
 const HeroScene = lazy(() => import("./HeroScene.jsx"));
 const WorkshopParticles = lazy(() => import("./WorkshopParticles.jsx"));
@@ -43,11 +55,27 @@ const routes = {
   blog: {
     path: "/blog/",
     label: "Blog",
-    eyebrow: "Community letter",
+    eyebrow: "Insights & community",
     heading: "We Grow Our Own",
-    title: "Blog | UNI",
+    title: "AI & Technology Insights | UNI",
     description:
-      "A UNI community letter about responsible AI, rural opportunity, and growing local technical talent in Lee County.",
+      "Practical AI buyer guides, enterprise strategy insights, and community writing from UNI on responsible technology, delivery, and rural opportunity.",
+  },
+  "ai-vendor-evaluation-checklist": {
+    path: "/insights/ai-vendor-evaluation-checklist/",
+    label: "AI Vendor Evaluation Checklist",
+    parent: { label: "Blog", path: "/blog/" },
+    ...vendorEvaluationSeo,
+    ogType: "article",
+    structuredData: vendorEvaluationStructuredData,
+  },
+  "business-process-automation": {
+    path: "/blog/business-process-automation/",
+    label: "Business Process Automation",
+    parent: { label: "Blog", path: "/blog/" },
+    ...businessProcessAutomationSeo,
+    ogType: "article",
+    structuredData: businessProcessAutomationStructuredData,
   },
   contact: {
     path: "/contact/",
@@ -287,13 +315,20 @@ const blogPosts = [
 
 function normalizePath(pathname) {
   const path = pathname.replace(/\/+$/, "") || "/";
-  if (path === "/") return "home";
-  const slug = path.slice(1);
-  return routes[slug] ? slug : "home";
+  const matchingRoute = Object.entries(routes).find(([, route]) => {
+    const routePath = route.path.replace(/\/+$/, "") || "/";
+    return routePath === path;
+  });
+  return matchingRoute?.[0] || "home";
 }
 
 function getRoutePath(slug) {
   return routes[slug]?.path || "/";
+}
+
+function isNavItemActive(currentPage, navItem) {
+  return currentPage === navItem
+    || (routes[currentPage]?.parent?.path === routes[navItem]?.path);
 }
 
 function updateMeta(route) {
@@ -307,6 +342,9 @@ function updateMeta(route) {
 
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute("content", `https://theunicorntechs.com${route.path}`);
+
+  const ogType = document.querySelector('meta[property="og:type"]');
+  if (ogType) ogType.setAttribute("content", route.ogType || "website");
 
   const ogTitle = document.querySelector('meta[property="og:title"]');
   if (ogTitle) ogTitle.setAttribute("content", route.title);
@@ -515,7 +553,7 @@ export default function App() {
             {navItems.map((id) => (
               <li key={id}>
                 <a
-                  className={`nav__link ${currentPage === id ? "nav__link--active" : ""}`}
+                  className={`nav__link ${isNavItemActive(currentPage, id) ? "nav__link--active" : ""}`}
                   href={getRoutePath(id)}
                   onClick={(event) => handleNavClick(event, id)}
                 >
@@ -906,6 +944,10 @@ function RoutePage({ page, ...props }) {
         </>
       )}
       {page === "blog" && <BlogSection />}
+      {page === "ai-vendor-evaluation-checklist" && (
+        <VendorEvaluationGuide navigateTo={props.navigateTo} />
+      )}
+      {page === "business-process-automation" && <BusinessProcessAutomationGuide />}
       {page === "contact" && <ContactSection {...props} />}
       {page !== "contact" && <PhilosophySection />}
     </>
@@ -919,6 +961,12 @@ function PageMasthead({ handleHeroPointerEnter, isDark, route, showHeroScene }) 
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span aria-hidden="true">/</span>
+          {route.parent && (
+            <>
+              <a href={route.parent.path}>{route.parent.label}</a>
+              <span aria-hidden="true">/</span>
+            </>
+          )}
           <span>{route.label}</span>
         </nav>
         <div className="section__label">{route.eyebrow}</div>
@@ -1126,6 +1174,14 @@ function AdvisoryDetailSection({ navigateTo }) {
           </div>
         </section>
 
+        <p className="advisory-resource">
+          Evaluating a platform now? Use UNI's{" "}
+          <a href="/insights/ai-vendor-evaluation-checklist/">
+            40-question AI vendor evaluation checklist
+          </a>{" "}
+          to organize the evidence before the next demo or proposal review.
+        </p>
+
         <section className="advisory-cta" aria-labelledby="advisory-cta-title">
           <div>
             <div className="section__label section__label--light">Start with the real decision</div>
@@ -1297,6 +1353,30 @@ function BlogSection() {
           </p>
         </div>
         <div className="blog__posts">
+          <a className="insight-feature" href="/blog/business-process-automation/">
+            <span className="blog-post__meta">
+              <span>Practical guide</span>
+              <span>November 2026</span>
+            </span>
+            <span className="blog-post__title">Business Process Automation: A Practical Guide for Leaders</span>
+            <span className="blog-post__overview">
+              Choose the right process, map the real work, test the economics, and pilot automation
+              without betting the business.
+            </span>
+            <span className="blog-post__toggle" aria-hidden="true">Read the guide</span>
+          </a>
+          <a className="insight-feature" href="/insights/ai-vendor-evaluation-checklist/">
+            <span className="blog-post__meta">
+              <span>Practical guide</span>
+              <span>September 2026</span>
+            </span>
+            <span className="blog-post__title">AI Vendor Evaluation Checklist: 40 Questions Before You Buy</span>
+            <span className="blog-post__overview">
+              Pressure-test business value, data rights, security, quality, integration, cost,
+              operations, and exit risk before an AI proposal becomes an expensive dependency.
+            </span>
+            <span className="blog-post__toggle" aria-hidden="true">Use the checklist</span>
+          </a>
           {blogPosts.map((post) => (
             <details className="blog-post" key={post.id}>
               <summary className="blog-post__summary">
@@ -1336,6 +1416,245 @@ function BlogSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function VendorEvaluationGuide({ navigateTo }) {
+  return (
+    <article className="guide">
+      <div className="guide__shell">
+        <header className="guide__intro">
+          <div className="guide__byline">
+            <span>By Heather Hitchler</span>
+            <span>Founder &amp; Executive Fiduciary Architect</span>
+            <time dateTime="2026-09-30">Updated September 30, 2026</time>
+          </div>
+          <div className="guide__answer">
+            <p>
+              A defensible AI vendor evaluation starts with a defined business outcome and ends
+              with evidence your team can verify. Score the vendor on workflow fit, data rights,
+              use-case performance, security, integration, governance, operations, total cost,
+              exit terms, and a representative pilot. Do not let a high total score offset a zero
+              in a category that could stop production.
+            </p>
+          </div>
+          <div className="guide__actions">
+            <button className="btn btn--primary" type="button" onClick={() => window.print()}>
+              Print the checklist
+            </button>
+            <a className="guide__text-link" href="#scorecard">Start with the scorecard ↓</a>
+          </div>
+        </header>
+
+        <div className="guide__layout">
+          <aside className="guide__toc" aria-label="On this page">
+            <p>On this page</p>
+            <ol>
+              <li><a href="#before-you-score">Before you score</a></li>
+              {vendorEvaluationRubric.map((section) => (
+                <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>
+              ))}
+              <li><a href="#red-flags">Six stop signs</a></li>
+              <li><a href="#decision-gate">Make the decision</a></li>
+              <li><a href="#vendor-evaluation-faq">FAQ</a></li>
+            </ol>
+          </aside>
+
+          <div className="guide__content">
+            <section className="guide__section" id="before-you-score">
+              <div className="section__label">Before the first demo</div>
+              <h2>Write the decision before vendors write the story</h2>
+              <p>
+                Most weak evaluations begin too late. The vendor presents a compelling capability,
+                stakeholders react to what they saw, and the buying criteria are assembled around
+                the favored product. Reverse that sequence. Before reviewing solutions, write one
+                plain-language success statement:
+              </p>
+              <blockquote>
+                We will use this system to improve <strong>[workflow]</strong> for
+                <strong> [users]</strong>, moving <strong>[baseline]</strong> to
+                <strong> [target]</strong> by <strong>[date]</strong>, without exceeding
+                <strong> [cost and risk boundaries]</strong>.
+              </blockquote>
+              <p>
+                If the sponsor cannot complete that sentence, the organization is not ready to
+                compare vendors. It is still defining the problem.
+              </p>
+            </section>
+
+            <section className="guide__scorecard" id="scorecard" aria-labelledby="scorecard-title">
+              <div>
+                <div className="section__label section__label--light">A simple evidence scale</div>
+                <h2 id="scorecard-title">Score proof, not presentation quality</h2>
+              </div>
+              <div className="guide__score-grid">
+                <div><strong>0</strong><span>No answer</span><p>The requirement is unmet or unknown.</p></div>
+                <div><strong>1</strong><span>Claim</span><p>The vendor has described an answer.</p></div>
+                <div><strong>2</strong><span>Documented</span><p>Relevant evidence has been provided.</p></div>
+                <div><strong>3</strong><span>Verified</span><p>Your team reproduced or validated it.</p></div>
+              </div>
+              <p className="guide__score-note">
+                Maximum score: 120. Treat data rights, security, quality thresholds, and exit
+                rights as hard gates when the use case requires them. This scorecard supports a
+                decision; it is not a compliance assessment or a substitute for legal, privacy,
+                security, or financial review.
+              </p>
+            </section>
+
+            <section className="guide__section" aria-labelledby="questions-title">
+              <div className="section__label">The 40-question checklist</div>
+              <h2 id="questions-title">Ten evidence gates between the demo and the contract</h2>
+              <p>
+                Score each question from 0 to 3. Record the evidence, its owner, and any condition
+                that must be resolved before the next gate. A confident verbal answer is still a 1.
+              </p>
+            </section>
+
+            <div className="guide__rubric">
+              {vendorEvaluationRubric.map((section) => (
+                <section className="guide__rubric-section" id={section.id} key={section.id}>
+                  <div className="guide__rubric-heading">
+                    <span>{section.number}</span>
+                    <div>
+                      <h2>{section.title}</h2>
+                      <p>{section.protects}</p>
+                    </div>
+                  </div>
+                  <ol>
+                    {section.questions.map((question) => (
+                      <li key={question}>
+                        {question}
+                        <span className="guide__print-score" aria-hidden="true">
+                          Score: &nbsp; 0 ○ &nbsp; 1 ○ &nbsp; 2 ○ &nbsp; 3 ○
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                  <div className="guide__evidence">
+                    <strong>Evidence to request</strong>
+                    <p>{section.evidence}</p>
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <section className="guide__section guide__section--signals" id="red-flags">
+              <div className="section__label">Six stop signs</div>
+              <h2>Red flags a weighted score should not hide</h2>
+              <ul>
+                <li>The vendor will not state in writing how your data, prompts, or outputs are used.</li>
+                <li>Performance claims rely on a generic benchmark or a vendor-controlled demo, not your workflow.</li>
+                <li>The proposal has no named owner for integration, evaluation, monitoring, or incident response.</li>
+                <li>Production pricing cannot be modeled under realistic and stress-case usage.</li>
+                <li>An underlying model or feature can change without notice, re-testing, or a rollback path.</li>
+                <li>Your data and operating artifacts cannot be exported in a usable form when the relationship ends.</li>
+              </ul>
+            </section>
+
+            <section className="guide__section" id="decision-gate">
+              <div className="section__label">From score to decision</div>
+              <h2>Make the pilot earn a production decision</h2>
+              <p>
+                A pilot is not a smaller purchase. It is a controlled test of the claims that matter.
+                Use representative data, real users, required integrations, known edge cases, and
+                expected operating volume. Agree on the decision thresholds before work begins.
+              </p>
+              <div className="guide__decision-grid">
+                <div><strong>96–120</strong><span>Pilot candidate</span><p>Evidence is strong enough to test under controlled conditions, subject to every hard gate.</p></div>
+                <div><strong>72–95</strong><span>Proceed with conditions</span><p>Name the open evidence, owner, deadline, and consequence before pilot approval.</p></div>
+                <div><strong>Below 72</strong><span>Not ready</span><p>Resolve material gaps or evaluate another path before adding implementation cost.</p></div>
+              </div>
+              <p>
+                The ranges are a working heuristic, not a validated risk model. Adjust weights and
+                thresholds to the use case, industry, applicable obligations, and your risk tolerance.
+                The important discipline is to decide the rules before seeing the results.
+              </p>
+            </section>
+
+            <section className="guide__section guide__section--source">
+              <div className="section__label">Framework alignment</div>
+              <h2>Use established risk language without turning the review into theater</h2>
+              <p>
+                This checklist is informed by the NIST AI Risk Management Framework's Govern, Map,
+                Measure, and Manage functions. NIST treats procurement, impact assessment,
+                governance, and third-party components as work across the AI lifecycle. Use that
+                framework to deepen the review, then translate it into evidence, owners, and
+                decisions that fit the specific system.
+              </p>
+              <div className="guide__source-links">
+                <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noreferrer">NIST AI Risk Management Framework ↗</a>
+                <a href="https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence" target="_blank" rel="noreferrer">NIST Generative AI Profile ↗</a>
+              </div>
+            </section>
+
+            <section className="advisory-faq guide__faq" id="vendor-evaluation-faq" aria-labelledby="vendor-evaluation-faq-title">
+              <div className="section__label">AI vendor evaluation FAQ</div>
+              <h2 id="vendor-evaluation-faq-title">Questions buyers ask before the contract</h2>
+              <div className="advisory-faq__list">
+                {vendorEvaluationFaqs.map((item) => (
+                  <details key={item.question}>
+                    <summary>{item.question}</summary>
+                    <p>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+
+            <section className="advisory-cta guide__cta" aria-labelledby="guide-cta-title">
+              <div>
+                <div className="section__label section__label--light">An independent second look</div>
+                <h2 id="guide-cta-title">Pressure-test the AI decision before you fund it.</h2>
+                <p>
+                  UNI evaluates the proposal, evidence, architecture, economics, delivery plan, and
+                  exit risk without software commissions or a quota tied to the answer.
+                </p>
+              </div>
+              <button className="btn btn--light" onClick={() => navigateTo("contact")}>
+                Talk with an AI advisor <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function BusinessProcessAutomationGuide() {
+  return (
+    <article className="guide business-article">
+      <div className="guide__shell">
+        <header className="guide__intro">
+          <div className="guide__byline">
+            <span>By Dylan</span>
+            <span>UNI</span>
+            <time dateTime="2026-11-04">November 4, 2026</time>
+          </div>
+          <div className="guide__answer">
+            <p>
+              Business process automation uses software to run repeatable, multi-step work with
+              little manual effort. It pays off when the process is stable, frequent, measurable,
+              and well understood—and fails when you automate a mess or ignore lifetime cost.
+            </p>
+          </div>
+        </header>
+
+        <div className="guide__layout">
+          <aside className="guide__toc" aria-label="On this page">
+            <p>On this page</p>
+            <ol>
+              {businessProcessAutomationToc.map(([id, label]) => (
+                <li key={id}><a href={`#${id}`}>{label}</a></li>
+              ))}
+            </ol>
+          </aside>
+          <div
+            className="guide__content business-article__content"
+            dangerouslySetInnerHTML={{ __html: businessProcessAutomationArticleHtml }}
+          />
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -1485,7 +1804,7 @@ function Footer({ currentPage, handleNavClick }) {
             {navItems.map((id) => (
               <li key={id}>
                 <a
-                  className={`footer__link ${currentPage === id ? "footer__link--active" : ""}`}
+                  className={`footer__link ${isNavItemActive(currentPage, id) ? "footer__link--active" : ""}`}
                   href={getRoutePath(id)}
                   onClick={(event) => handleNavClick(event, id)}
                 >
