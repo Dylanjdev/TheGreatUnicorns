@@ -143,7 +143,7 @@ export const businessProcessAutomationArticleHtml = `
       <p>We see the same pattern in most automation projects that stall. The demo worked, the contract was signed, and then the process met reality: messy data, undocumented exceptions, systems that do not integrate the way the sales deck implied, and a maintenance bill nobody priced.</p>
       <p>That is why we start with the process and the economics, not the product. At UNI we are vendor-neutral and commission-free, so our advice depends on your requirements and not on what a platform pays to be recommended. We look at what the automation will truly cost to run, where the margin risk sits, and whether your team can operate it after the consultants leave.</p>
       <p>Our view is that a good automation decision is mostly made before any software is chosen: a clear map, an honest business case and a pilot designed to fail early if it is going to fail. For smaller organizations and local employers, that discipline matters even more, because there is little slack to absorb a bad bet. Done well, automation protects margins and lets a local team spend its time on work that needs people.</p>
-      <footer>— Dylan</footer>
+      <footer>— Heather Hitchler</footer>
     </blockquote>
   </section>
 
@@ -237,7 +237,7 @@ export const businessProcessAutomationStructuredData = {
       datePublished: "2026-11-04",
       dateModified: "2026-11-04",
       mainEntityOfPage: "https://theunicorntechs.com/blog/business-process-automation/",
-      author: { "@type": "Person", name: "Dylan" },
+      author: { "@type": "Person", name: "Heather Hitchler" },
       publisher: {
         "@type": "Organization",
         "@id": "https://theunicorntechs.com/#organization",

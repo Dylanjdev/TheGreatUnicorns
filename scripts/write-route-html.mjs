@@ -26,6 +26,12 @@ import {
   businessProcessAutomationStructuredData,
   businessProcessAutomationToc,
 } from "../src/businessProcessAutomationContent.js";
+import {
+  technologyDueDiligenceArticleHtml,
+  technologyDueDiligenceSeo,
+  technologyDueDiligenceStructuredData,
+  technologyDueDiligenceToc,
+} from "../src/technologyDueDiligenceContent.js";
 
 const siteUrl = "https://theunicorntechs.com";
 
@@ -67,6 +73,21 @@ const routes = [
     body: businessProcessAutomationSnapshot(),
     ogType: "article",
     structuredData: businessProcessAutomationStructuredData,
+  },
+  {
+    path: "/blog/technology-due-diligence/",
+    title: technologyDueDiligenceSeo.title,
+    description: technologyDueDiligenceSeo.description,
+    keywords:
+      "technology due diligence, technical due diligence, IT due diligence, M&A technology review, technology audit, AI due diligence, vendor due diligence",
+    body: technologyDueDiligenceSnapshot(),
+    image: technologyDueDiligenceSeo.ogImage,
+    imageAlt: technologyDueDiligenceSeo.ogImageAlt,
+    imageType: technologyDueDiligenceSeo.ogImageType,
+    imageWidth: technologyDueDiligenceSeo.ogImageWidth,
+    imageHeight: technologyDueDiligenceSeo.ogImageHeight,
+    ogType: "article",
+    structuredData: technologyDueDiligenceStructuredData,
   },
   {
     path: "/blog/",
@@ -452,6 +473,12 @@ function blogSnapshot() {
               <p class="section__lead">Useful frameworks for leaders making consequential AI and technology decisions.</p>
             </div>
             <div class="blog__posts">
+              <a class="insight-feature" href="/blog/technology-due-diligence/">
+                <span class="blog-post__meta"><span>Executive guide</span><span>November 2026</span></span>
+                <span class="blog-post__title">Technology Due Diligence: What It Covers and How to Use It</span>
+                <span class="blog-post__overview">Test the technology behind a deal, investment, or major platform commitment—and turn technical findings into decisions on price, terms, risk, and integration.</span>
+                <span class="blog-post__toggle">Read the guide</span>
+              </a>
               <a class="insight-feature" href="/blog/business-process-automation/">
                 <span class="blog-post__meta"><span>Practical guide</span><span>November 2026</span></span>
                 <span class="blog-post__title">Business Process Automation: A Practical Guide for Leaders</span>
@@ -495,7 +522,7 @@ function businessProcessAutomationSnapshot() {
           <div class="guide__shell">
             <header class="guide__intro">
               <div class="guide__byline">
-                <span>By Dylan</span><span>UNI</span>
+                <span>By Heather Hitchler</span><span>UNI</span>
                 <time datetime="2026-11-04">November 4, 2026</time>
               </div>
               <div class="guide__answer">
@@ -512,6 +539,47 @@ function businessProcessAutomationSnapshot() {
     </div>`;
 }
 
+function technologyDueDiligenceSnapshot() {
+  const toc = technologyDueDiligenceToc
+    .map(([id, label]) => `<li><a href="#${escapeAttribute(id)}">${escapeHtml(label)}</a></li>`)
+    .join("");
+
+  return `
+    <div class="app seo-static-snapshot">
+      <main id="main-content" class="page-main">
+        <section class="page-hero">
+          <div class="page-hero__content">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+              <a href="/">Home</a><span aria-hidden="true">/</span>
+              <a href="/blog/">Blog</a><span aria-hidden="true">/</span>
+              <span>Technology Due Diligence</span>
+            </nav>
+            <div class="section__label">${escapeHtml(technologyDueDiligenceSeo.eyebrow)}</div>
+            <h1 class="page-hero__title">${escapeHtml(technologyDueDiligenceSeo.heading)}</h1>
+            <p class="page-hero__lead">${escapeHtml(technologyDueDiligenceSeo.heroDescription)}</p>
+          </div>
+        </section>
+        <article class="guide business-article">
+          <div class="guide__shell">
+            <header class="guide__intro">
+              <div class="guide__byline">
+                <span>By Heather Hitchler</span><span>UNI</span>
+                <time datetime="2026-11-06">November 6, 2026</time>
+              </div>
+              <div class="guide__answer">
+                <p>Technology due diligence independently tests the software, systems, infrastructure, security, vendors, and technical team behind a deal or major investment—so leaders can see what the technology really is, what it will cost to operate, and what could break the business case.</p>
+              </div>
+            </header>
+            <div class="guide__layout">
+              <aside class="guide__toc" aria-label="On this page"><p>On this page</p><ol>${toc}</ol></aside>
+              <div class="guide__content business-article__content">${technologyDueDiligenceArticleHtml}</div>
+            </div>
+          </div>
+        </article>
+      </main>
+    </div>`;
+}
+
 function routeHtml(template, route) {
   const canonicalUrl = `${siteUrl}${route.path}`;
   const title = escapeAttribute(route.title);
@@ -520,6 +588,9 @@ function routeHtml(template, route) {
   const socialImageAlt = escapeAttribute(
     route.imageAlt || "UNI — Stop the Bleed. Vendor-neutral AI & IT consulting.",
   );
+  const socialImageType = route.imageType || "image/png";
+  const socialImageWidth = route.imageWidth || "1200";
+  const socialImageHeight = route.imageHeight || "630";
   const structuredData = route.structuredData
     ? `<script id="route-structured-data" type="application/ld+json">${JSON.stringify(route.structuredData).replace(/</g, "\\u003c")}</script>`
     : "";
@@ -569,6 +640,18 @@ function routeHtml(template, route) {
     .replace(
       /<meta name="twitter:image" content="[^"]*" \/>/,
       `<meta name="twitter:image" content="${socialImage}" />`,
+    )
+    .replace(
+      /<meta property="og:image:type" content="[^"]*" \/>/,
+      `<meta property="og:image:type" content="${socialImageType}" />`,
+    )
+    .replace(
+      /<meta property="og:image:width" content="[^"]*" \/>/,
+      `<meta property="og:image:width" content="${socialImageWidth}" />`,
+    )
+    .replace(
+      /<meta property="og:image:height" content="[^"]*" \/>/,
+      `<meta property="og:image:height" content="${socialImageHeight}" />`,
     )
     .replace(
       /<meta property="og:image:alt" content="[^"]*" \/>/,

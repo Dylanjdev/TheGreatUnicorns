@@ -28,6 +28,12 @@ import {
   businessProcessAutomationStructuredData,
   businessProcessAutomationToc,
 } from "./businessProcessAutomationContent.js";
+import {
+  technologyDueDiligenceArticleHtml,
+  technologyDueDiligenceSeo,
+  technologyDueDiligenceStructuredData,
+  technologyDueDiligenceToc,
+} from "./technologyDueDiligenceContent.js";
 
 const HeroScene = lazy(() => import("./HeroScene.jsx"));
 const WorkshopParticles = lazy(() => import("./WorkshopParticles.jsx"));
@@ -76,6 +82,14 @@ const routes = {
     ...businessProcessAutomationSeo,
     ogType: "article",
     structuredData: businessProcessAutomationStructuredData,
+  },
+  "technology-due-diligence": {
+    path: "/blog/technology-due-diligence/",
+    label: "Technology Due Diligence",
+    parent: { label: "Blog", path: "/blog/" },
+    ...technologyDueDiligenceSeo,
+    ogType: "article",
+    structuredData: technologyDueDiligenceStructuredData,
   },
   contact: {
     path: "/contact/",
@@ -364,6 +378,15 @@ function updateMeta(route) {
 
   const twitterImage = document.querySelector('meta[name="twitter:image"]');
   if (twitterImage) twitterImage.setAttribute("content", socialImage);
+
+  const ogImageType = document.querySelector('meta[property="og:image:type"]');
+  if (ogImageType) ogImageType.setAttribute("content", route.ogImageType || "image/png");
+
+  const ogImageWidth = document.querySelector('meta[property="og:image:width"]');
+  if (ogImageWidth) ogImageWidth.setAttribute("content", route.ogImageWidth || "1200");
+
+  const ogImageHeight = document.querySelector('meta[property="og:image:height"]');
+  if (ogImageHeight) ogImageHeight.setAttribute("content", route.ogImageHeight || "630");
 
   const socialImageAlt = route.ogImageAlt || "UNI — Stop the Bleed. Vendor-neutral AI & IT consulting.";
   const ogImageAlt = document.querySelector('meta[property="og:image:alt"]');
@@ -948,6 +971,7 @@ function RoutePage({ page, ...props }) {
         <VendorEvaluationGuide navigateTo={props.navigateTo} />
       )}
       {page === "business-process-automation" && <BusinessProcessAutomationGuide />}
+      {page === "technology-due-diligence" && <TechnologyDueDiligenceGuide />}
       {page === "contact" && <ContactSection {...props} />}
       {page !== "contact" && <PhilosophySection />}
     </>
@@ -1353,6 +1377,18 @@ function BlogSection() {
           </p>
         </div>
         <div className="blog__posts">
+          <a className="insight-feature" href="/blog/technology-due-diligence/">
+            <span className="blog-post__meta">
+              <span>Executive guide</span>
+              <span>November 2026</span>
+            </span>
+            <span className="blog-post__title">Technology Due Diligence: What It Covers and How to Use It</span>
+            <span className="blog-post__overview">
+              Test the technology behind a deal, investment, or major platform commitment—and
+              turn technical findings into decisions on price, terms, risk, and integration.
+            </span>
+            <span className="blog-post__toggle" aria-hidden="true">Read the guide</span>
+          </a>
           <a className="insight-feature" href="/blog/business-process-automation/">
             <span className="blog-post__meta">
               <span>Practical guide</span>
@@ -1626,7 +1662,7 @@ function BusinessProcessAutomationGuide() {
       <div className="guide__shell">
         <header className="guide__intro">
           <div className="guide__byline">
-            <span>By Dylan</span>
+            <span>By Heather Hitchler</span>
             <span>UNI</span>
             <time dateTime="2026-11-04">November 4, 2026</time>
           </div>
@@ -1651,6 +1687,45 @@ function BusinessProcessAutomationGuide() {
           <div
             className="guide__content business-article__content"
             dangerouslySetInnerHTML={{ __html: businessProcessAutomationArticleHtml }}
+          />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function TechnologyDueDiligenceGuide() {
+  return (
+    <article className="guide business-article">
+      <div className="guide__shell">
+        <header className="guide__intro">
+          <div className="guide__byline">
+            <span>By Heather Hitchler</span>
+            <span>UNI</span>
+            <time dateTime="2026-11-06">November 6, 2026</time>
+          </div>
+          <div className="guide__answer">
+            <p>
+              Technology due diligence independently tests the software, systems,
+              infrastructure, security, vendors, and technical team behind a deal or major
+              investment—so leaders can see what the technology really is, what it will cost to
+              operate, and what could break the business case.
+            </p>
+          </div>
+        </header>
+
+        <div className="guide__layout">
+          <aside className="guide__toc" aria-label="On this page">
+            <p>On this page</p>
+            <ol>
+              {technologyDueDiligenceToc.map(([id, label]) => (
+                <li key={id}><a href={`#${id}`}>{label}</a></li>
+              ))}
+            </ol>
+          </aside>
+          <div
+            className="guide__content business-article__content"
+            dangerouslySetInnerHTML={{ __html: technologyDueDiligenceArticleHtml }}
           />
         </div>
       </div>
